@@ -41,3 +41,6 @@
 2025-04-05 14:51:26,101 - morris-manager - INFO - Zapisano PID 94045 do pliku mqtt.pid
 2025-04-05 14:51:26,101 - morris-manager - INFO - Zapisano PID procesu MQTT: 94045
 2025-04-05 14:51:26,101 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 94042)
+2025-04-05 15:11:27,746 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 15:11:27,749 - morris-manager - INFO - Zapisano PID 95480 do pliku morris.pid
+2025-04-05 15:11:29,779 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 95480)
