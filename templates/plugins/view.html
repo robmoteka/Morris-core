@@ -1,0 +1,343 @@
+{% extends 'base.html' %}
+
+{% block title %}Szczegóły wtyczki - Morris{% endblock %}
+
+{% block page_title %}Szczegóły wtyczki: {{ plugin.name }}{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Strona główna</a></li>
+<li class="breadcrumb-item"><a href="/plugins">Wtyczki</a></li>
+<li class="breadcrumb-item active">{{ plugin.name }}</li>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title">
+            {{ plugin.name }}
+            {% if plugin.status == 'online' %}
+            <span class="badge badge-success ml-2">Online</span>
+            {% else %}
+            <span class="badge badge-danger ml-2">Offline</span>
+            {% endif %}
+        </h3>
+        <div>
+            <a href="/plugins" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Powrót do listy
+            </a>
+            <form method="POST" action="/plugins/unregister/{{ plugin.name }}" class="d-inline">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="btn btn-outline-danger ml-2" 
+                       onclick="return confirm('Czy na pewno chcesz usunąć tę wtyczkę? Ta operacja jest nieodwracalna.')">
+                    <i class="fas fa-trash"></i> Usuń wtyczkę
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="mb-3">
+                    <h5>Opis</h5>
+                    <p>{{ plugin.description }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <h5>Typ</h5>
+                    <p>
+                        {% if plugin.type == 'local' %}
+                        <span class="badge badge-primary">Lokalna</span>
+                        {% elif plugin.type == 'mqtt' %}
+                        <span class="badge badge-success">MQTT</span>
+                        {% elif plugin.type == 'rest' %}
+                        <span class="badge badge-info">REST</span>
+                        {% else %}
+                        <span class="badge badge-secondary">{{ plugin.type }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+                
+                {% if plugin.capabilities %}
+                <div class="mb-3">
+                    <h5>Możliwości</h5>
+                    <ul class="list-group">
+                        {% for capability in plugin.capabilities %}
+                        <li class="list-group-item">{{ capability }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
+                {% if plugin.config %}
+                <div class="mb-3">
+                    <h5>Konfiguracja</h5>
+                    <div class="bg-light p-3 rounded">
+                        <pre class="mb-0"><code>{{ plugin.config|tojson(indent=2) }}</code></pre>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0">Informacje</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Status
+                                {% if plugin.status == 'online' %}
+                                <span class="badge badge-success">Online</span>
+                                {% else %}
+                                <span class="badge badge-danger">Offline</span>
+                                {% endif %}
+                            </li>
+                            {% if plugin.last_seen %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Ostatnio widziana
+                                <span>{{ plugin.last_seen|format_datetime }}</span>
+                            </li>
+                            {% endif %}
+                            {% if plugin.version %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Wersja
+                                <span>{{ plugin.version }}</span>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Akcje</h5>
+                    </div>
+                    <div class="card-body">
+                        <button type="button" class="btn btn-primary mb-2 btn-block" id="btnTestPlugin">
+                            <i class="fas fa-play"></i> Testuj połączenie
+                        </button>
+                        <button type="button" class="btn btn-info mb-2 btn-block" id="btnRefreshStatus">
+                            <i class="fas fa-sync-alt"></i> Odśwież status
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-block" data-toggle="modal" data-target="#configModal">
+                            <i class="fas fa-cog"></i> Edytuj konfigurację
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if plugin.logs %}
+<div class="card mt-4">
+    <div class="card-header">
+        <h3 class="card-title">Logi</h3>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Czas</th>
+                        <th>Poziom</th>
+                        <th>Wiadomość</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in plugin.logs %}
+                    <tr>
+                        <td>{{ log.timestamp|format_datetime }}</td>
+                        <td>
+                            {% if log.level == 'info' %}
+                            <span class="badge badge-info">INFO</span>
+                            {% elif log.level == 'warning' %}
+                            <span class="badge badge-warning">WARNING</span>
+                            {% elif log.level == 'error' %}
+                            <span class="badge badge-danger">ERROR</span>
+                            {% else %}
+                            <span class="badge badge-secondary">{{ log.level }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ log.message }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Modal do edycji konfiguracji -->
+<div class="modal fade" id="configModal" tabindex="-1" role="dialog" aria-labelledby="configModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="configModalLabel">Edycja konfiguracji wtyczki</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="jsonEditor" style="height: 400px;" data-plugin-name="{{ plugin.name }}" data-plugin-config='{{ plugin.config|tojson if plugin.config else "{}" }}'></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+                <button type="button" class="btn btn-primary" id="saveConfig">Zapisz konfigurację</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Inicjalizacja po załadowaniu dokumentu
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicjalizacja JSONEditor dla edycji konfiguracji
+        var editorContainer = document.getElementById('jsonEditor');
+        if (editorContainer) {
+            // Pobierz dane z atrybutów data-
+            var pluginName = editorContainer.getAttribute('data-plugin-name');
+            var pluginConfig;
+            
+            try {
+                pluginConfig = JSON.parse(editorContainer.getAttribute('data-plugin-config'));
+            } catch (e) {
+                console.error('Błąd parsowania konfiguracji:', e);
+                pluginConfig = {};
+            }
+            
+            var editor = new JSONEditor(editorContainer, {
+                mode: 'tree',
+                modes: ['code', 'tree'],
+                onError: function(err) {
+                    console.error('JSONEditor error:', err);
+                }
+            });
+            
+            // Ustaw początkową konfigurację
+            editor.set(pluginConfig);
+            
+            // Obsługa zapisywania konfiguracji
+            document.getElementById('saveConfig').addEventListener('click', function() {
+                try {
+                    var newConfig = editor.get();
+                    
+                    // Wysłanie konfiguracji do API
+                    fetch('/api/plugins/' + pluginName + '/config', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(newConfig)
+                    })
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        if (data.status === 'success') {
+                            // Użyj biblioteki SweetAlert2 jeśli jest dostępna, albo zwykłego alert
+                            if (typeof Swal !== 'undefined') {
+                                Swal.fire({
+                                    title: 'Sukces!',
+                                    text: 'Konfiguracja została zaktualizowana',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK'
+                                }).then(function() {
+                                    // Zamknij modal i odśwież stronę
+                                    $('#configModal').modal('hide');
+                                    location.reload();
+                                });
+                            } else {
+                                alert('Konfiguracja została zaktualizowana');
+                                // Zamknij modal i odśwież stronę
+                                $('#configModal').modal('hide');
+                                location.reload();
+                            }
+                        } else {
+                            alert('Błąd: ' + data.message);
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Error:', error);
+                        alert('Wystąpił błąd podczas zapisywania konfiguracji');
+                    });
+                } catch (e) {
+                    alert('Błąd: ' + e.message);
+                }
+            });
+        }
+        
+        // Obsługa przycisku testowania wtyczki
+        var btnTestPlugin = document.getElementById('btnTestPlugin');
+        if (btnTestPlugin) {
+            // Pobierz nazwę wtyczki z elementu jsonEditor
+            var pluginName = document.getElementById('jsonEditor').getAttribute('data-plugin-name');
+            
+            btnTestPlugin.addEventListener('click', function() {
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testowanie...';
+                
+                fetch('/api/plugins/' + pluginName + '/test', {
+                    method: 'POST'
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    if (data.status === 'success') {
+                        alert('Test zakończony pomyślnie');
+                    } else {
+                        alert('Błąd: ' + data.message);
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Error:', error);
+                    alert('Wystąpił błąd podczas testowania wtyczki');
+                })
+                .finally(function() {
+                    var button = document.getElementById('btnTestPlugin');
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-play"></i> Testuj połączenie';
+                });
+            });
+        }
+        
+        // Obsługa przycisku odświeżania statusu
+        var btnRefreshStatus = document.getElementById('btnRefreshStatus');
+        if (btnRefreshStatus) {
+            // Pobierz nazwę wtyczki z elementu jsonEditor
+            var pluginName = document.getElementById('jsonEditor').getAttribute('data-plugin-name');
+            
+            btnRefreshStatus.addEventListener('click', function() {
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Odświeżanie...';
+                
+                fetch('/api/plugins/' + pluginName)
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        if (data.status === 'success') {
+                            location.reload();
+                        } else {
+                            alert('Błąd: ' + data.message);
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Error:', error);
+                        alert('Wystąpił błąd podczas odświeżania statusu');
+                    })
+                    .finally(function() {
+                        var button = document.getElementById('btnRefreshStatus');
+                        button.disabled = false;
+                        button.innerHTML = '<i class="fas fa-sync-alt"></i> Odśwież status';
+                    });
+            });
+        }
+    });
+</script>
+{% endblock %}

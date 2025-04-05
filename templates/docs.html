@@ -1,0 +1,430 @@
+{% extends 'base.html' %}
+
+{% block title %}Dokumentacja - Morris{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Strona główna</a></li>
+<li class="breadcrumb-item active">Dokumentacja</li>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card sticky-top" style="top: 20px;">
+            <div class="card-header">
+                <h5 class="mb-0">Spis treści</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="#introduction" class="list-group-item list-group-item-action">Wprowadzenie</a>
+                <a href="#chains" class="list-group-item list-group-item-action">Łańcuchy przetwarzania</a>
+                <a href="#plugins" class="list-group-item list-group-item-action">Wtyczki</a>
+                <a href="#step-types" class="list-group-item list-group-item-action">Typy kroków</a>
+                <a href="#webhooks" class="list-group-item list-group-item-action">Webhooks</a>
+                <a href="#mqtt" class="list-group-item list-group-item-action">MQTT</a>
+                <a href="#api" class="list-group-item list-group-item-action">API REST</a>
+                <a href="#examples" class="list-group-item list-group-item-action">Przykłady użycia</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 id="introduction" class="card-title">Wprowadzenie do Morris</h2>
+                <hr class="my-3">
+                <p>
+                    Morris to system przetwarzania danych oparty na łańcuchach (chains), który pozwala na definiowanie
+                    przepływu danych i ich transformację w postaci sekwencji kroków. System jest modularny i rozszerzalny
+                    dzięki architekturze opartej na wtyczkach.
+                </p>
+                <p>
+                    Główne funkcje systemu Morris to:
+                </p>
+                <ul>
+                    <li>Definiowanie łańcuchów przetwarzania danych</li>
+                    <li>Obsługa różnych źródeł danych (webhooks, MQTT)</li>
+                    <li>Możliwość rozszerzania funkcjonalności poprzez wtyczki</li>
+                    <li>Monitorowanie i debugowanie łańcuchów przetwarzania</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 id="chains" class="card-title">Łańcuchy przetwarzania (Chains)</h2>
+                <hr class="my-3">
+                <p>
+                    Łańcuch przetwarzania (chain) to sekwencja kroków, które są wykonywane na danych w określonej kolejności.
+                    Każdy łańcuch musi mieć unikalny identyfikator oraz źródło danych (trigger), które inicjuje jego wykonanie.
+                </p>
+                
+                <h4 class="mt-4">Struktura łańcucha</h4>
+                <p>Każdy łańcuch składa się z:</p>
+                <ul>
+                    <li><strong>Identyfikatora</strong> - unikalna nazwa łańcucha</li>
+                    <li><strong>Opisu</strong> (opcjonalnie) - dodatkowe informacje o łańcuchu</li>
+                    <li><strong>Triggera</strong> - źródło danych (webhook, MQTT)</li>
+                    <li><strong>Kroków</strong> - lista kroków przetwarzania</li>
+                </ul>
+                
+                <h4 class="mt-4">Przykładowa definicja łańcucha w formacie JSON</h4>
+                <pre><code>{
+  "id": "simple_data_processor",
+  "description": "Prosty łańcuch do przetwarzania danych JSON",
+  "webhook": {
+    "endpoint": "process-data",
+    "methods": ["POST"]
+  },
+  "steps": [
+    {
+      "name": "validate_input",
+      "type": "validator",
+      "config": {
+        "schema": {
+          "type": "object",
+          "required": ["data"],
+          "properties": {
+            "data": {"type": "object"}
+          }
+        }
+      }
+    },
+    {
+      "name": "transform_data",
+      "type": "transformer",
+      "config": {
+        "mapping": {
+          "outputField": "$.data.inputField"
+        }
+      }
+    }
+  ]
+}</code></pre>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 id="plugins" class="card-title">Wtyczki (Plugins)</h2>
+                <hr class="my-3">
+                <p>
+                    Wtyczki rozszerzają funkcjonalność systemu Morris poprzez dodawanie nowych możliwości przetwarzania danych.
+                    Mogą być używane jako kroki w łańcuchach przetwarzania lub jako niezależne moduły.
+                </p>
+                
+                <h4 class="mt-4">Typy wtyczek</h4>
+                <ul>
+                    <li><strong>Lokalne</strong> - wtyczki uruchomione w ramach procesu Morris Core</li>
+                    <li><strong>MQTT</strong> - wtyczki komunikujące się za pomocą protokołu MQTT</li>
+                    <li><strong>REST</strong> - wtyczki dostępne poprzez interfejs REST API</li>
+                </ul>
+                
+                <h4 class="mt-4">Rejestracja wtyczek</h4>
+                <p>
+                    Wtyczki mogą być zarejestrowane na kilka sposobów:
+                </p>
+                <ol>
+                    <li>Poprzez panel administracyjny</li>
+                    <li>Poprzez REST API</li>
+                    <li>Automatycznie poprzez MQTT - wtyczki mogą same zgłosić swoją obecność w systemie</li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 id="step-types" class="card-title">Typy kroków</h2>
+                <hr class="my-3">
+                <p>
+                    Kroki są podstawowymi jednostkami przetwarzania w łańcuchu. Każdy krok ma swój typ, który określa
+                    sposób przetwarzania danych.
+                </p>
+                
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Typ</th>
+                                <th>Opis</th>
+                                <th>Przykład konfiguracji</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>processor</strong></td>
+                                <td>Przetwarza dane wejściowe i generuje dane wyjściowe</td>
+                                <td><pre><code>{"method": "transform"}</code></pre></td>
+                            </tr>
+                            <tr>
+                                <td><strong>transformer</strong></td>
+                                <td>Transformuje dane według zdefiniowanego schematu</td>
+                                <td><pre><code>{"mapping": {"output": "$.input"}}</code></pre></td>
+                            </tr>
+                            <tr>
+                                <td><strong>validator</strong></td>
+                                <td>Sprawdza, czy dane spełniają określone kryteria</td>
+                                <td><pre><code>{"schema": {"type": "object"}}</code></pre></td>
+                            </tr>
+                            <tr>
+                                <td><strong>filter</strong></td>
+                                <td>Filtruje dane według określonych warunków</td>
+                                <td><pre><code>{"condition": "$.value > 10"}</code></pre></td>
+                            </tr>
+                            <tr>
+                                <td><strong>plugin</strong></td>
+                                <td>Używa zarejestrowanej wtyczki do przetwarzania</td>
+                                <td><pre><code>{"plugin": "image_processor"}</code></pre></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 id="webhooks" class="card-title">Webhooks</h2>
+                <hr class="my-3">
+                <p>
+                    Webhooks to jeden z mechanizmów wyzwalania łańcuchów przetwarzania. Pozwalają na uruchomienie
+                    przetwarzania danych w odpowiedzi na żądanie HTTP.
+                </p>
+                
+                <h4 class="mt-4">Konfiguracja webhooków</h4>
+                <p>
+                    Webhook definiuje się w łańcuchu poprzez określenie:
+                </p>
+                <ul>
+                    <li><strong>endpoint</strong> - ścieżka URL, pod którą webhook będzie dostępny</li>
+                    <li><strong>methods</strong> - lista dozwolonych metod HTTP (GET, POST, PUT, DELETE)</li>
+                </ul>
+                
+                <h4 class="mt-4">Przykład użycia</h4>
+                <p>
+                    Dla łańcucha z endpointem "process-data", webhook będzie dostępny pod adresem:
+                </p>
+                <pre><code>POST /hook/process-data</code></pre>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 id="mqtt" class="card-title">MQTT</h2>
+                <hr class="my-3">
+                <p>
+                    MQTT to protokół komunikacyjny używany w Internecie Rzeczy (IoT), który pozwala na przesyłanie
+                    wiadomości między urządzeniami. W Morris może być używany jako trigger łańcucha lub do komunikacji
+                    z wtyczkami.
+                </p>
+                
+                <h4 class="mt-4">Konfiguracja MQTT jako triggera</h4>
+                <p>
+                    Aby użyć MQTT jako triggera, należy zdefiniować:
+                </p>
+                <ul>
+                    <li><strong>topic</strong> - temat MQTT, na który łańcuch będzie nasłuchiwał</li>
+                    <li><strong>qos</strong> - poziom jakości usługi (0, 1 lub 2)</li>
+                </ul>
+                
+                <h4 class="mt-4">Przykład konfiguracji</h4>
+                <pre><code>{
+  "mqtt": {
+    "topic": "sensors/temperature",
+    "qos": 1
+  }
+}</code></pre>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 id="api" class="card-title">API REST</h2>
+                <hr class="my-3">
+                <p>
+                    Morris udostępnia interfejs REST API, który pozwala na programistyczne zarządzanie łańcuchami
+                    i wtyczkami.
+                </p>
+                
+                <h4 class="mt-4">Zarządzanie łańcuchami</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Endpoint</th>
+                                <th>Metoda</th>
+                                <th>Opis</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>/api/chains</td>
+                                <td>GET</td>
+                                <td>Pobiera listę wszystkich łańcuchów</td>
+                            </tr>
+                            <tr>
+                                <td>/api/chains/{chain_id}</td>
+                                <td>GET</td>
+                                <td>Pobiera definicję konkretnego łańcucha</td>
+                            </tr>
+                            <tr>
+                                <td>/api/chains</td>
+                                <td>POST</td>
+                                <td>Tworzy nowy łańcuch</td>
+                            </tr>
+                            <tr>
+                                <td>/api/chains/{chain_id}</td>
+                                <td>PUT</td>
+                                <td>Aktualizuje istniejący łańcuch</td>
+                            </tr>
+                            <tr>
+                                <td>/api/chains/{chain_id}</td>
+                                <td>DELETE</td>
+                                <td>Usuwa łańcuch</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h4 class="mt-4">Zarządzanie wtyczkami</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Endpoint</th>
+                                <th>Metoda</th>
+                                <th>Opis</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>/api/plugins</td>
+                                <td>GET</td>
+                                <td>Pobiera listę wszystkich wtyczek</td>
+                            </tr>
+                            <tr>
+                                <td>/api/plugins/{name}</td>
+                                <td>GET</td>
+                                <td>Pobiera szczegóły konkretnej wtyczki</td>
+                            </tr>
+                            <tr>
+                                <td>/api/plugins</td>
+                                <td>POST</td>
+                                <td>Rejestruje nową wtyczkę</td>
+                            </tr>
+                            <tr>
+                                <td>/api/plugins/{name}</td>
+                                <td>DELETE</td>
+                                <td>Usuwa wtyczkę</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 id="examples" class="card-title">Przykłady użycia</h2>
+                <hr class="my-3">
+                <h4 class="mt-4">Przykład 1: Przetwarzanie danych z czujnika temperatury</h4>
+                <pre><code>{
+  "id": "temperature_processor",
+  "description": "Przetwarza dane z czujnika temperatury i wysyła alarmy",
+  "mqtt": {
+    "topic": "sensors/temperature",
+    "qos": 1
+  },
+  "steps": [
+    {
+      "name": "validate_input",
+      "type": "validator",
+      "config": {
+        "schema": {
+          "type": "object",
+          "required": ["temperature", "humidity"],
+          "properties": {
+            "temperature": {"type": "number"},
+            "humidity": {"type": "number"}
+          }
+        }
+      }
+    },
+    {
+      "name": "check_temperature",
+      "type": "filter",
+      "config": {
+        "condition": "$.temperature > 30"
+      }
+    },
+    {
+      "name": "send_alarm",
+      "type": "plugin",
+      "config": {
+        "plugin": "notification_service",
+        "method": "send_email",
+        "params": {
+          "subject": "Alarm temperatury",
+          "message": "Temperatura przekroczyła 30°C: {{$.temperature}}°C"
+        }
+      }
+    }
+  ]
+}</code></pre>
+                
+                <h4 class="mt-4">Przykład 2: Przetwarzanie żądań webhooków</h4>
+                <pre><code>{
+  "id": "user_data_processor",
+  "description": "Przetwarza dane użytkownika z formularza kontaktowego",
+  "webhook": {
+    "endpoint": "contact-form",
+    "methods": ["POST"]
+  },
+  "steps": [
+    {
+      "name": "validate_form",
+      "type": "validator",
+      "config": {
+        "schema": {
+          "type": "object",
+          "required": ["name", "email", "message"],
+          "properties": {
+            "name": {"type": "string"},
+            "email": {"type": "string", "format": "email"},
+            "message": {"type": "string"}
+          }
+        }
+      }
+    },
+    {
+      "name": "format_message",
+      "type": "transformer",
+      "config": {
+        "mapping": {
+          "formatted": "Wiadomość od {{$.name}} ({{$.email}}): {{$.message}}"
+        }
+      }
+    },
+    {
+      "name": "save_to_database",
+      "type": "plugin",
+      "config": {
+        "plugin": "database_connector",
+        "method": "insert",
+        "params": {
+          "table": "contact_messages",
+          "data": {
+            "name": "$.name",
+            "email": "$.email",
+            "message": "$.message",
+            "timestamp": "{{now()}}"
+          }
+        }
+      }
+    }
+  ]
+}</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

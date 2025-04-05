@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Morris - System Zarządzania{% endblock %}</title>
+    
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- AdminLTE v3 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css">
+    <!-- JSONEditor - do edycji konfiguracji w formacie JSON -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.10.0/jsoneditor.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.10.0/jsoneditor.min.js"></script>
+    
+    <!-- Dodatkowe style -->
+    <style>
+        /* Dopasowania dla Morris */
+        .content-wrapper {
+            min-height: calc(100vh - 57px) !important;
+        }
+        .jsoneditor {
+            border: 1px solid #3c3c3c !important;
+        }
+        .dark-mode .jsoneditor {
+            border: 1px solid #6c757d !important;
+        }
+        .dark-mode .jsoneditor-menu {
+            background-color: #343a40 !important;
+            border-bottom: 1px solid #4b545c !important;
+        }
+        .dark-mode .jsoneditor-navigation-bar {
+            background-color: #343a40 !important;
+            color: #fff !important;
+        }
+        .dark-mode .jsoneditor-poweredBy {
+            color: #adb5bd !important;
+        }
+        .dark-mode .jsoneditor-statusbar {
+            background-color: #343a40 !important;
+            border-top: 1px solid #4b545c !important;
+            color: #adb5bd !important;
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body class="hold-transition sidebar-mini dark-mode">
+    <div class="wrapper">
+        <!-- Nagłówek - navbar -->
+        <nav class="main-header navbar navbar-expand navbar-dark">
+            <!-- Lewy navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="/" class="nav-link">Strona główna</a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="/docs" class="nav-link">Dokumentacja</a>
+                </li>
+            </ul>
+
+            <!-- Prawy navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" id="darkModeToggle" href="#" role="button">
+                        <i class="fas fa-moon"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Pasek boczny - sidebar -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Logo -->
+            <a href="/" class="brand-link">
+                {% if logo_url %}
+                <img src="{{ logo_url }}" alt="Morris Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                {% else %}
+                <i class="fas fa-robot brand-image img-circle elevation-3" style="opacity: .8"></i>
+                {% endif %}
+                <span class="brand-text font-weight-light">Morris</span>
+            </a>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Menu sidebar -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
+                        <li class="nav-header">ŁAŃCUCHY</li>
+                        <li class="nav-item">
+                            <a href="/chains" class="nav-link {% if request.path == '/chains' %}active{% endif %}">
+                                <i class="nav-icon fas fa-link"></i>
+                                <p>Lista łańcuchów</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/chains/new" class="nav-link {% if request.path == '/chains/new' %}active{% endif %}">
+                                <i class="nav-icon fas fa-plus"></i>
+                                <p>Nowy łańcuch</p>
+                            </a>
+                        </li>
+                        <li class="nav-header">WTYCZKI</li>
+                        <li class="nav-item">
+                            <a href="/plugins" class="nav-link {% if request.path == '/plugins' %}active{% endif %}">
+                                <i class="nav-icon fas fa-puzzle-piece"></i>
+                                <p>Lista wtyczek</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/plugins/new" class="nav-link {% if request.path == '/plugins/new' %}active{% endif %}">
+                                <i class="nav-icon fas fa-plug"></i>
+                                <p>Dodaj wtyczkę</p>
+                            </a>
+                        </li>
+                        <li class="nav-header">SYSTEM</li>
+                        <li class="nav-item">
+                            <a href="/docs" class="nav-link {% if request.path == '/docs' %}active{% endif %}">
+                                <i class="nav-icon fas fa-book"></i>
+                                <p>Dokumentacja</p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Główna zawartość -->
+        <div class="content-wrapper">
+            <!-- Nagłówek zawartości -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">{% block page_title %}Dashboard{% endblock %}</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                {% block breadcrumb %}
+                                <li class="breadcrumb-item"><a href="/">Strona główna</a></li>
+                                {% endblock %}
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zawartość główna -->
+            <div class="content">
+                <div class="container-fluid">
+                    <!-- Komunikaty flash -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                    
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Stopka -->
+        <footer class="main-footer">
+            <div class="float-right d-none d-sm-inline">
+                System zarządzania automatyzacją
+            </div>
+            <strong>Morris Core &copy; 2025</strong>
+        </footer>
+    </div>
+
+    <!-- Wymagane skrypty AdminLTE -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/js/adminlte.min.js"></script>
+    
+    <!-- Skrypt do obsługi trybu ciemnego -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sprawdź czy użytkownik ma zapisane preferencje trybu ciemnego
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            
+            // Ustaw tryb ciemny zgodnie z preferencjami
+            document.body.classList.toggle('dark-mode', darkMode);
+            
+            // Obsługa przycisku przełączania trybu ciemnego
+            document.getElementById('darkModeToggle').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Przełącz tryb ciemny
+                const isDarkMode = document.body.classList.toggle('dark-mode');
+                
+                // Zapisz preferencje użytkownika
+                localStorage.setItem('darkMode', isDarkMode);
+                
+                // Zmień ikonę przycisku
+                const icon = this.querySelector('i');
+                if (isDarkMode) {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                } else {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                }
+            });
+            
+            // Ustaw odpowiednią ikonę przy ładowaniu strony
+            const darkModeIcon = document.querySelector('#darkModeToggle i');
+            if (darkMode) {
+                darkModeIcon.classList.remove('fa-sun');
+                darkModeIcon.classList.add('fa-moon');
+            } else {
+                darkModeIcon.classList.remove('fa-moon');
+                darkModeIcon.classList.add('fa-sun');
+            }
+        });
+    </script>
+    
+    <!-- Dodatkowe skrypty -->
+    {% block scripts %}{% endblock %}
+</body>
+</html>

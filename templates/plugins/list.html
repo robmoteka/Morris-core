@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista wtyczek - Morris{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Strona główna</a></li>
+<li class="breadcrumb-item active">Wtyczki</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Wtyczki</h2>
+    <a href="/plugins/new" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Dodaj wtyczkę
+    </a>
+</div>
+
+{% if plugins %}
+<div class="card">
+    <div class="card-header">
+        Lista dostępnych wtyczek
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Nazwa</th>
+                    <th>Typ</th>
+                    <th>Status</th>
+                    <th>Opis</th>
+                    <th>Ostatnio widziana</th>
+                    <th>Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plugin in plugins %}
+                <tr>
+                    <td>{{ plugin.name }}</td>
+                    <td>
+                        {% if plugin.type == 'local' %}
+                        <span class="badge bg-primary">Lokalna</span>
+                        {% elif plugin.type == 'mqtt' %}
+                        <span class="badge bg-success">MQTT</span>
+                        {% elif plugin.type == 'rest' %}
+                        <span class="badge bg-info">REST</span>
+                        {% else %}
+                        <span class="badge bg-secondary">{{ plugin.type }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if plugin.status == 'online' %}
+                        <span class="badge bg-success">Online</span>
+                        {% else %}
+                        <span class="badge bg-danger">Offline</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ plugin.description }}</td>
+                    <td>
+                        {% if plugin.last_seen %}
+                        <small class="text-muted" title="{{ plugin.last_seen }}">
+                            {{ plugin.last_seen|format_datetime }}
+                        </small>
+                        {% else %}
+                        <small class="text-muted">-</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="/plugins/view/{{ plugin.name }}" class="btn btn-outline-primary">Szczegóły</a>
+                            <button type="button" class="btn btn-outline-danger" 
+                                   onclick="confirmDelete('{{ plugin.name }}')">Usuń</button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info" role="alert">
+    Brak zarejestrowanych wtyczek. <a href="/plugins/new" class="alert-link">Dodaj nową wtyczkę</a>.
+</div>
+{% endif %}
+
+<!-- Formularz dodawania nowej wtyczki -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h5>Dodaj nową wtyczkę</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="/plugins/register">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="pluginName" class="form-label">Nazwa wtyczki</label>
+                    <input type="text" class="form-control" id="pluginName" name="name" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="pluginType" class="form-label">Typ</label>
+                    <select class="form-select" id="pluginType" name="type" required>
+                        <option value="local">Lokalna</option>
+                        <option value="mqtt">MQTT</option>
+                        <option value="rest">REST</option>
+                    </select>
+                </div>
+                <div class="col-12 mb-3">
+                    <label for="pluginDescription" class="form-label">Opis</label>
+                    <textarea class="form-control" id="pluginDescription" name="description" rows="2" required></textarea>
+                </div>
+                <div class="col-12">
+                    <input type="hidden" name="status" value="online">
+                    <button type="submit" class="btn btn-success">Zarejestruj wtyczkę</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal do potwierdzenia usunięcia -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Potwierdź usunięcie</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Czy na pewno chcesz usunąć wtyczkę <span id="pluginToDelete"></span>?
+                <p class="text-danger mt-2">Ta operacja jest nieodwracalna.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                <form id="deleteForm" method="POST" action="">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger">Usuń</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Funkcja obsługująca okno dialogowe potwierdzenia usunięcia
+    function confirmDelete(pluginName) {
+        // Ustawienie nazwy wtyczki w oknie dialogowym
+        document.getElementById('pluginToDelete').textContent = pluginName;
+        
+        // Ustawienie akcji formularza
+        document.getElementById('deleteForm').action = '/plugins/unregister/' + pluginName;
+        
+        // Pokazanie okna dialogowego
+        var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        deleteModal.show();
+    }
+    
+    // Aktualizacja statusu wtyczek co 30 sekund
+    function updatePluginStatuses() {
+        fetch('/api/plugins')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Tu można dodać kod odświeżający status wtyczek bez przeładowania strony
+                    console.log('Statusy wtyczek zaktualizowane');
+                }
+            })
+            .catch(error => console.error('Błąd podczas aktualizacji statusów wtyczek:', error));
+    }
+    
+    // Uruchomienie okresowej aktualizacji statusów
+    setInterval(updatePluginStatuses, 30000);
+</script>
+{% endblock %}

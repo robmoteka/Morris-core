@@ -1,0 +1,12 @@
+{
+    "broker": "broker.emqx.io",
+    "port": 1883,
+    "client_id": "morris_core_client",
+    "keepalive": 60,
+    "topics": {
+        "subscribe": ["core/#"],
+        "publish": "bridge/test/input"
+    },
+    "username": "",
+    "password": ""
+}

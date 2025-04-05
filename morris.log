@@ -1,0 +1,12 @@
+2025-04-05 14:07:19,170 - morris-manager - WARNING - Port 5000 jest już zajęty przez inny proces
+2025-04-05 14:09:18,466 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 14:09:18,470 - morris-manager - INFO - Zapisano PID 90937 do pliku morris.pid
+2025-04-05 14:09:20,498 - morris-manager - INFO - Zapisano PID 90940 do pliku mqtt.pid
+2025-04-05 14:09:20,498 - morris-manager - INFO - Zapisano PID procesu MQTT: 90940
+2025-04-05 14:09:20,498 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 90937)
+2025-04-05 14:10:42,726 - morris-manager - INFO - Aplikacja Morris nie jest uruchomiona
+2025-04-05 14:10:46,484 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 14:10:46,488 - morris-manager - INFO - Zapisano PID 91242 do pliku morris.pid
+2025-04-05 14:10:48,520 - morris-manager - INFO - Zapisano PID 91245 do pliku mqtt.pid
+2025-04-05 14:10:48,520 - morris-manager - INFO - Zapisano PID procesu MQTT: 91245
+2025-04-05 14:10:48,520 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 91242)

@@ -1,0 +1,48 @@
+{
+  "test_chain": {
+    "trigger": "webhook:test",
+    "description": "Testowy chain do przetwarzania danych z webhooka /hook/test",
+    "steps": [
+      {
+        "plugin": "LogPlugin",
+        "params": {
+          "log_level": "info",
+          "log_details": true
+        }
+      },
+      {
+        "plugin": "UppercasePlugin",
+        "params": {
+          "keys": ["message"]
+        }
+      },
+      {
+        "plugin": "LogPlugin",
+        "params": {
+          "log_level": "info"
+        }
+      }
+    ]
+  },
+  "mqtt_test_chain": {
+    "trigger": "mqtt:core/test",
+    "description": "Testowy chain do przetwarzania danych z MQTT na temacie core/test",
+    "steps": [
+      {
+        "plugin": "LogPlugin",
+        "params": {
+          "log_level": "info"
+        }
+      },
+      {
+        "plugin": "UppercasePlugin"
+      },
+      {
+        "plugin": "remote:TransformPlugin",
+        "params": {
+          "timeout": 5
+        }
+      }
+    ]
+  }
+}
