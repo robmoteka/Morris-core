@@ -167,3 +167,76 @@ def unregister_plugin(n):
             "status": "error",
             "message": f"Nie udało się usunąć wtyczki {n}"
         }), 404
+
+@plugins_bp.route('/api/plugins/<n>/config', methods=['GET', 'PUT'])
+def manage_plugin_config(n):
+    """
+    Zarządza konfiguracją wtyczki.
+    
+    GET: Pobiera aktualną konfigurację wtyczki.
+    PUT: Aktualizuje konfigurację wtyczki.
+    
+    Args:
+        n (str): Nazwa wtyczki
+        
+    Returns:
+        Response: Informacja o statusie operacji lub aktualna konfiguracja
+    """
+    # Dostęp do Plugin Managera z kontekstu aplikacji
+    plugin_manager = current_app.config.get('plugin_manager')
+    
+    if not plugin_manager:
+        logger.error("Plugin Manager nie jest dostępny w kontekście aplikacji")
+        return jsonify({
+            "status": "error",
+            "message": "Plugin Manager nie jest dostępny"
+        }), 500
+    
+    # Pobranie danych wtyczki
+    plugin = plugin_manager.get_plugin(n)
+    
+    if not plugin:
+        return jsonify({
+            "status": "error",
+            "message": f"Wtyczka {n} nie istnieje"
+        }), 404
+    
+    # Obsługa żądania GET - zwraca aktualną konfigurację
+    if request.method == 'GET':
+        config = plugin.get('config', {})
+        return jsonify({
+            "status": "success",
+            "config": config
+        })
+    
+    # Obsługa żądania PUT - aktualizuje konfigurację
+    elif request.method == 'PUT':
+        # Sprawdzenie czy dane przychodzące są w formacie JSON
+        if not request.is_json:
+            logger.warning("Otrzymano nieprawidłowe dane (nie JSON) dla konfiguracji wtyczki")
+            return jsonify({
+                "status": "error",
+                "message": "Oczekiwano danych w formacie JSON"
+            }), 400
+        
+        # Pobranie nowej konfiguracji
+        new_config = request.get_json()
+        
+        try:
+            # Aktualizacja konfiguracji wtyczki
+            with plugin_manager.lock:
+                plugin['config'] = new_config
+                plugin_manager._save_plugins()
+            
+            logger.info(f"Zaktualizowano konfigurację wtyczki: {n}")
+            return jsonify({
+                "status": "success",
+                "message": f"Zaktualizowano konfigurację wtyczki: {n}",
+                "config": new_config
+            })
+        except Exception as e:
+            logger.error(f"Błąd podczas aktualizacji konfiguracji wtyczki {n}: {e}")
+            return jsonify({
+                "status": "error",
+                "message": f"Nie udało się zaktualizować konfiguracji: {str(e)}"
+            }), 500

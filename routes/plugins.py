@@ -33,6 +33,11 @@ def list_plugins():
     
     return render_template('plugins/list.html', plugins=pluginsList)
 
+@plugins_bp.route('/plugins/new')
+def new_plugin():
+    """Wyświetla formularz do dodawania nowej wtyczki."""
+    return render_template('plugins/new.html')
+
 @plugins_bp.route('/plugins/view/<name>')
 def view_plugin(name):
     """

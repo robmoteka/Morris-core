@@ -1,5 +1,5 @@
 Masz przed sobą kod panelu administracyjnego systemu Morris – modularnej aplikacji zarządzającej chainami i wtyczkami.  
-Zweryfikuj, czy implementacja frontendu i powiązanego backendu działa zgodnie z dokumentem „Opis Modułu Core.md”, który znajduje się w katalogu głównym projektu.
+Zweryfikuj, czy implementacja frontendu i powiązanego backendu działa zgodnie z dokumentem „README.md”, który znajduje się w katalogu głównym projektu.
 
 🔍 Sprawdź następujące funkcje:
 
@@ -39,7 +39,7 @@ Zweryfikuj, czy implementacja frontendu i powiązanego backendu działa zgodnie 
 - `plugins.json`, `chains.json`
 
 📁 **Uwaga**:
-Dokument projektowy znajduje się w `Opis Modulu Core.md`. Zweryfikuj zgodność z jego sekcjami:
+Dokument projektowy znajduje się w `README.md`. Zweryfikuj zgodność z jego sekcjami:
 
 - „Panel webowy”
 - „Chainy (Przepływy)”

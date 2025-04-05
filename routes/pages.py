@@ -16,7 +16,6 @@ from flask import (
 )
 from flask_login import login_required
 import json
-from app import VERSION
 
 # Utworzenie blueprintu dla ścieżek związanych ze stronami statycznymi
 pages_bp = Blueprint("pages", __name__)
@@ -25,6 +24,9 @@ pages_bp = Blueprint("pages", __name__)
 @pages_bp.route("/")
 def index():
     """Strona główna panelu administracyjnego."""
+    # Pobierz VERSION z kontekstu aplikacji
+    version = current_app.config.get("VERSION", "Nieznana")
+
     # Pobierz Chain Engine z kontekstu aplikacji
     chainEngine = current_app.config.get("chain_engine")
     if not chainEngine:
@@ -53,7 +55,7 @@ def index():
             if plugin.get("status") == "online":
                 stats["onlinePlugins"] += 1
 
-    return render_template("index.html", stats=stats, version=VERSION)
+    return render_template("index.html", stats=stats, version=version)
 
 
 @pages_bp.route("/dashboard")

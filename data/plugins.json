@@ -1,1 +1,59 @@
-{}
+{
+  "UppercasePlugin": {
+    "name": "UppercasePlugin",
+    "type": "local",
+    "description": "Konwertuje wartości tekstowe w danych wejściowych na wielkie litery",
+    "status": "active",
+    "config": {
+      "fieldsToTransform": [
+        "title",
+        "description"
+      ],
+      "ignoreFields": [
+        "tags",
+        "author"
+      ],
+      "preserveNumbers": true
+    }
+  },
+  "LogPlugin": {
+    "name": "LogPlugin",
+    "type": "local",
+    "description": "Loguje otrzymane dane i przekazuje je dalej bez zmian.",
+    "status": "active",
+    "config": {
+      "config": {
+        "filtering": {
+          "exclude_fields": [],
+          "include_only": [],
+          "max_log_length": 1000
+        },
+        "log_details": {
+          "include_data_size": false,
+          "include_data_type": true,
+          "include_source": true,
+          "include_timestamp": true
+        },
+        "log_format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        "log_level": "INFO",
+        "output_options": {
+          "backup_count": 5,
+          "console": true,
+          "file": false,
+          "file_path": "logs/log_plugin.log",
+          "max_file_size_mb": 10
+        }
+      },
+      "description": "Konfiguracja wtyczki LogPlugin",
+      "name": "LogPlugin",
+      "version": "1.0.0"
+    }
+  },
+  "Wazapa": {
+    "name": "Wazapa",
+    "type": "rest",
+    "description": "Wtyczka biorąca z mojego whatsap posty z hashtagiem. Następnie ma je wysłać na endpoind core ",
+    "status": "offline",
+    "last_seen": "2025-04-05T22:13:46.102715"
+  }
+}

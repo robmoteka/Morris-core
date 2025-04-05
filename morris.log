@@ -44,3 +44,146 @@
 2025-04-05 15:11:27,746 - morris-manager - INFO - Uruchamianie aplikacji Morris...
 2025-04-05 15:11:27,749 - morris-manager - INFO - Zapisano PID 95480 do pliku morris.pid
 2025-04-05 15:11:29,779 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 95480)
+2025-04-05 15:15:19,212 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 15:15:19,216 - morris-manager - INFO - Zapisano PID 95887 do pliku morris.pid
+2025-04-05 15:15:21,244 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 95887)
+2025-04-05 15:17:13,553 - morris-manager - INFO - Aplikacja Morris nie jest uruchomiona
+2025-04-05 15:17:16,724 - morris-manager - INFO - Aplikacja Morris nie jest uruchomiona
+2025-04-05 15:17:18,650 - morris-manager - INFO - Aplikacja Morris nie jest uruchomiona
+2025-04-05 15:18:25,497 - morris-manager - ERROR - Błąd podczas odczytywania PID z pliku: invalid literal for int() with base 10: ''
+2025-04-05 15:18:29,808 - morris-manager - ERROR - Błąd podczas odczytywania PID z pliku: invalid literal for int() with base 10: ''
+2025-04-05 15:18:29,938 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 15:18:29,941 - morris-manager - INFO - Zapisano PID 96617 do pliku morris.pid
+2025-04-05 15:18:31,970 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 96617)
+2025-04-05 15:21:55,729 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 15:21:55,730 - morris-manager - INFO - Aplikacja Morris nie jest uruchomiona
+2025-04-05 15:21:57,811 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 15:21:57,815 - morris-manager - INFO - Zapisano PID 96909 do pliku morris.pid
+2025-04-05 15:22:03,174 - morris-manager - ERROR - Nie można połączyć się z aplikacją webową: HTTPConnectionPool(host='localhost', port=30331): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x75d7624dbfd0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-04-05 15:22:03,174 - morris-manager - ERROR - Proces został uruchomiony, ale serwer webowy nie odpowiada.
+2025-04-05 15:22:03,174 - morris-manager - ERROR - Sprawdź logi w plikach app_out.log i app_err.log
+2025-04-05 15:22:03,174 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 96909)
+2025-04-05 15:32:48,357 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 15:32:48,361 - morris-manager - INFO - Zapisano PID 98349 do pliku morris.pid
+2025-04-05 15:32:50,387 - morris-manager - WARNING - Moduł requests nie jest zainstalowany. Nie można sprawdzić dostępności serwera webowego.
+2025-04-05 15:32:50,388 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 98349)
+2025-04-05 15:33:47,880 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 15:33:47,884 - morris-manager - INFO - Zapisano PID 98566 do pliku morris.pid
+2025-04-05 15:33:53,202 - morris-manager - ERROR - Nie można połączyć się z aplikacją webową: HTTPConnectionPool(host='localhost', port=30331): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7c63e856e890>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-04-05 15:33:53,203 - morris-manager - ERROR - Proces został uruchomiony, ale serwer webowy nie odpowiada.
+2025-04-05 15:33:53,203 - morris-manager - ERROR - Sprawdź logi w plikach app_out.log i app_err.log
+2025-04-05 15:33:53,203 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 98566)
+2025-04-05 15:35:52,312 - morris-manager - INFO - Aplikacja Morris nie jest uruchomiona
+2025-04-05 15:38:04,331 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 15:38:04,335 - morris-manager - INFO - Zapisano PID 99328 do pliku morris.pid
+2025-04-05 15:38:06,362 - morris-manager - INFO - Zapisano PID 99333 do pliku mqtt.pid
+2025-04-05 15:38:06,363 - morris-manager - INFO - Zapisano PID procesu MQTT: 99333
+2025-04-05 15:38:09,682 - morris-manager - INFO - Aplikacja webowa działa poprawnie na porcie 30331
+2025-04-05 15:38:09,683 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 99328)
+2025-04-05 16:19:52,104 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 16:19:52,105 - morris-manager - INFO - Aplikacja Morris nie jest uruchomiona
+2025-04-05 16:19:54,221 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 16:19:54,226 - morris-manager - INFO - Zapisano PID 103461 do pliku morris.pid
+2025-04-05 16:19:56,251 - morris-manager - INFO - Zapisano PID 103464 do pliku mqtt.pid
+2025-04-05 16:19:56,252 - morris-manager - INFO - Zapisano PID procesu MQTT: 103464
+2025-04-05 16:19:59,564 - morris-manager - INFO - Aplikacja webowa działa poprawnie na porcie 30331
+2025-04-05 16:19:59,565 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 103461)
+2025-04-05 16:21:43,447 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 16:21:43,474 - morris-manager - INFO - Wysłano sygnał SIGTERM do procesu głównego (PID: 103461)
+2025-04-05 16:21:45,474 - morris-manager - INFO - Aplikacja Morris została zatrzymana
+2025-04-05 16:21:47,606 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 16:21:47,609 - morris-manager - INFO - Zapisano PID 103875 do pliku morris.pid
+2025-04-05 16:21:49,637 - morris-manager - INFO - Zapisano PID 103887 do pliku mqtt.pid
+2025-04-05 16:21:49,637 - morris-manager - INFO - Zapisano PID procesu MQTT: 103887
+2025-04-05 16:21:52,957 - morris-manager - INFO - Aplikacja webowa działa poprawnie na porcie 30331
+2025-04-05 16:21:52,957 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 103875)
+2025-04-05 16:24:01,669 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 16:24:01,695 - morris-manager - INFO - Wysłano sygnał SIGTERM do procesu głównego (PID: 103875)
+2025-04-05 16:24:03,696 - morris-manager - INFO - Aplikacja Morris została zatrzymana
+2025-04-05 16:24:05,815 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 16:24:05,819 - morris-manager - INFO - Zapisano PID 104128 do pliku morris.pid
+2025-04-05 16:24:07,845 - morris-manager - INFO - Zapisano PID 104144 do pliku mqtt.pid
+2025-04-05 16:24:07,845 - morris-manager - INFO - Zapisano PID procesu MQTT: 104144
+2025-04-05 16:24:11,128 - morris-manager - INFO - Aplikacja webowa działa poprawnie na porcie 30331
+2025-04-05 16:24:11,128 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 104128)
+2025-04-05 16:57:05,012 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 16:57:05,028 - morris-manager - INFO - Wysłano sygnał SIGTERM do procesu głównego (PID: 104128)
+2025-04-05 16:57:07,030 - morris-manager - INFO - Aplikacja Morris została zatrzymana
+2025-04-05 16:57:09,112 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 16:57:09,116 - morris-manager - INFO - Zapisano PID 106223 do pliku morris.pid
+2025-04-05 16:57:11,145 - morris-manager - INFO - Zapisano PID 106228 do pliku mqtt.pid
+2025-04-05 16:57:11,146 - morris-manager - INFO - Zapisano PID procesu MQTT: 106228
+2025-04-05 16:57:14,487 - morris-manager - INFO - Aplikacja webowa działa poprawnie na porcie 30331
+2025-04-05 16:57:14,487 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 106223)
+2025-04-05 17:03:19,904 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 17:03:19,932 - morris-manager - INFO - Wysłano sygnał SIGTERM do procesu głównego (PID: 106223)
+2025-04-05 17:03:21,933 - morris-manager - INFO - Aplikacja Morris została zatrzymana
+2025-04-05 17:03:24,053 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 17:03:24,057 - morris-manager - INFO - Zapisano PID 107512 do pliku morris.pid
+2025-04-05 17:03:26,082 - morris-manager - INFO - Zapisano PID 107515 do pliku mqtt.pid
+2025-04-05 17:03:26,083 - morris-manager - INFO - Zapisano PID procesu MQTT: 107515
+2025-04-05 17:03:29,380 - morris-manager - INFO - Aplikacja webowa działa poprawnie na porcie 30331
+2025-04-05 17:03:29,380 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 107512)
+2025-04-05 17:04:36,697 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 17:04:36,723 - morris-manager - INFO - Wysłano sygnał SIGTERM do procesu głównego (PID: 107512)
+2025-04-05 17:04:38,726 - morris-manager - INFO - Aplikacja Morris została zatrzymana
+2025-04-05 17:04:40,865 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 17:04:40,868 - morris-manager - INFO - Zapisano PID 107904 do pliku morris.pid
+2025-04-05 17:04:42,898 - morris-manager - INFO - Zapisano PID 107907 do pliku mqtt.pid
+2025-04-05 17:04:42,898 - morris-manager - INFO - Zapisano PID procesu MQTT: 107907
+2025-04-05 17:04:46,200 - morris-manager - INFO - Aplikacja webowa działa poprawnie na porcie 30331
+2025-04-05 17:04:46,200 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 107904)
+2025-04-05 21:13:23,090 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 21:13:23,116 - morris-manager - INFO - Wysłano sygnał SIGTERM do procesu głównego (PID: 107904)
+2025-04-05 21:13:25,118 - morris-manager - INFO - Aplikacja Morris została zatrzymana
+2025-04-05 21:13:27,257 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 21:13:27,261 - morris-manager - INFO - Zapisano PID 113139 do pliku morris.pid
+2025-04-05 21:13:29,292 - morris-manager - INFO - Zapisano PID 113142 do pliku mqtt.pid
+2025-04-05 21:13:29,292 - morris-manager - INFO - Zapisano PID procesu MQTT: 113142
+2025-04-05 21:13:32,659 - morris-manager - INFO - Aplikacja webowa działa poprawnie na porcie 30331
+2025-04-05 21:13:32,660 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 113139)
+2025-04-05 21:21:42,315 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 21:21:42,332 - morris-manager - INFO - Wysłano sygnał SIGTERM do procesu głównego (PID: 113139)
+2025-04-05 21:21:44,333 - morris-manager - INFO - Aplikacja Morris została zatrzymana
+2025-04-05 21:21:46,455 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 21:21:46,459 - morris-manager - INFO - Zapisano PID 113821 do pliku morris.pid
+2025-04-05 21:21:48,486 - morris-manager - INFO - Zapisano PID 113826 do pliku mqtt.pid
+2025-04-05 21:21:48,486 - morris-manager - INFO - Zapisano PID procesu MQTT: 113826
+2025-04-05 21:21:51,808 - morris-manager - INFO - Aplikacja webowa działa poprawnie na porcie 30331
+2025-04-05 21:21:51,808 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 113821)
+2025-04-05 21:45:48,087 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 21:45:48,115 - morris-manager - INFO - Wysłano sygnał SIGTERM do procesu głównego (PID: 113821)
+2025-04-05 21:45:50,116 - morris-manager - INFO - Aplikacja Morris została zatrzymana
+2025-04-05 21:45:52,252 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 21:45:52,255 - morris-manager - INFO - Zapisano PID 115916 do pliku morris.pid
+2025-04-05 21:45:54,273 - morris-manager - INFO - Zapisano PID 115923 do pliku mqtt.pid
+2025-04-05 21:45:54,273 - morris-manager - INFO - Zapisano PID procesu MQTT: 115923
+2025-04-05 21:45:57,458 - morris-manager - INFO - Aplikacja webowa działa poprawnie na porcie 30331
+2025-04-05 21:45:57,458 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 115916)
+2025-04-05 21:53:08,455 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 21:53:08,481 - morris-manager - INFO - Wysłano sygnał SIGTERM do procesu głównego (PID: 115916)
+2025-04-05 21:53:10,482 - morris-manager - INFO - Aplikacja Morris została zatrzymana
+2025-04-05 21:53:12,608 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 21:53:12,612 - morris-manager - INFO - Zapisano PID 116857 do pliku morris.pid
+2025-04-05 21:53:14,640 - morris-manager - INFO - Zapisano PID 116860 do pliku mqtt.pid
+2025-04-05 21:53:14,640 - morris-manager - INFO - Zapisano PID procesu MQTT: 116860
+2025-04-05 21:53:17,951 - morris-manager - INFO - Aplikacja webowa działa poprawnie na porcie 30331
+2025-04-05 21:53:17,951 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 116857)
+2025-04-05 21:56:38,064 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 21:56:38,090 - morris-manager - INFO - Wysłano sygnał SIGTERM do procesu głównego (PID: 116857)
+2025-04-05 21:56:40,091 - morris-manager - INFO - Aplikacja Morris została zatrzymana
+2025-04-05 21:56:42,217 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 21:56:42,219 - morris-manager - INFO - Zapisano PID 117344 do pliku morris.pid
+2025-04-05 21:56:44,238 - morris-manager - INFO - Zapisano PID 117347 do pliku mqtt.pid
+2025-04-05 21:56:44,239 - morris-manager - INFO - Zapisano PID procesu MQTT: 117347
+2025-04-05 21:56:47,587 - morris-manager - INFO - Aplikacja webowa działa poprawnie na porcie 30331
+2025-04-05 21:56:47,587 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 117344)
+2025-04-05 22:14:05,829 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 22:14:05,857 - morris-manager - INFO - Wysłano sygnał SIGTERM do procesu głównego (PID: 117344)
+2025-04-05 22:14:07,857 - morris-manager - INFO - Aplikacja Morris została zatrzymana
+2025-04-05 22:14:09,987 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 22:14:09,992 - morris-manager - INFO - Zapisano PID 118801 do pliku morris.pid
+2025-04-05 22:14:12,031 - morris-manager - INFO - Zapisano PID 118809 do pliku mqtt.pid
+2025-04-05 22:14:12,031 - morris-manager - INFO - Zapisano PID procesu MQTT: 118809
+2025-04-05 22:14:15,336 - morris-manager - INFO - Aplikacja webowa działa poprawnie na porcie 30331
+2025-04-05 22:14:15,336 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 118801)

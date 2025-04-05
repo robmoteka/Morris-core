@@ -21,10 +21,15 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Wersja aplikacji
-VERSION = "0.0.2"
+VERSION = "0.0.3"
 
 # Inicjalizacja aplikacji Flask
 app = Flask(__name__)
+
+# Dodanie wersji do konfiguracji aplikacji
+app.config["VERSION"] = VERSION
+app.secret_key = "morris-secret-key-change-in-production"  # Zmień na bezpieczniejszy ciąg w środowisku produkcyjnym
+
 
 # Inicjalizacja klienta MQTT
 mqtt_client = MqttClient()

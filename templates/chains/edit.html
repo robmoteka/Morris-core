@@ -3,8 +3,96 @@
 {% block title %}{{ action_title }} łańcuch - Morris{% endblock %}
 
 {% block head %}
-<!-- JSON Editor -->
-<link href="https://cdn.jsdelivr.net/npm/jsoneditor@9.9.2/dist/jsoneditor.min.css" rel="stylesheet">
+    <!-- JSON Editor -->
+    <link href="https://cdn.jsdelivr.net/npm/jsoneditor@9.9.2/dist/jsoneditor.min.css" rel="stylesheet">
+    <style>
+        .json-editor {
+            height: 300px;
+            margin-bottom: 10px;
+        }
+        .plugin-description {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .plugin-params-help {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        /* Style dla zakładek kroków */
+        .steps-tabs {
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #dee2e6;
+            padding-right: 0;
+            min-width: 200px;
+        }
+        .steps-tabs .nav-item {
+            margin-bottom: 5px;
+        }
+        .steps-tabs .nav-link {
+            border-radius: 0.25rem 0 0 0.25rem;
+            border: 1px solid #dee2e6;
+            border-right: none;
+            padding: 0.75rem 1rem;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .steps-tabs .nav-link.active {
+            background-color: #fff;
+            border-right: none;
+            font-weight: bold;
+        }
+        .steps-tabs .add-step-tab {
+            margin-top: 15px;
+            background-color: white;
+            color: #5e5e5e;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 0.75rem 1rem;
+            text-align: center;
+        }
+        .steps-tabs .add-step-tab:hover {
+            background-color: #5e5e5e;
+            color: white;
+        }
+        .steps-container {
+            display: flex;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            background-color: #fff;
+        }
+        .step-content {
+            flex-grow: 1;
+            padding: 1.5rem;
+        }
+        .step-tab-content {
+            display: none;
+        }
+        .step-tab-content.active {
+            display: block;
+        }
+        .delete-step-btn {
+            color: #dc3545;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            padding: 0.25rem 0.5rem;
+            margin-left: auto;
+            cursor: pointer;
+        }
+        .delete-step-btn:hover {
+            color: #bd2130;
+        }
+        .container-fluid {
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+        .json-preview-card {
+            margin-top: 2rem;
+        }
+    </style>
 {% endblock %}
 
 {% block breadcrumb %}
@@ -14,234 +102,269 @@
 {% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header">
-        <h3>{{ action_title }} łańcuch przetwarzania</h3>
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>{{ action_title }} łańcuch</h1>
+            <p class="lead">Skonfiguruj łańcuch przetwarzania danych.</p>
+        </div>
     </div>
-    <div class="card-body">
-        <form id="chainForm" method="POST" action="{{ action_url }}">
-            <div class="mb-3">
-                <label for="chainId" class="form-label">Identyfikator łańcucha</label>
-                <input type="text" class="form-control" id="chainId" name="chain_id" 
-                       value="{{ chain.id|default('') }}" {% if chain.id %}readonly{% endif %} required>
-                <div class="form-text">Unikalny identyfikator łańcucha (np. "my_processing_chain").</div>
-            </div>
-            
-            <div class="mb-3">
-                <label for="chainDescription" class="form-label">Opis</label>
-                <textarea class="form-control" id="chainDescription" name="description" rows="2" required>{{ chain.description|default('') }}</textarea>
-                <div class="form-text">Krótki opis funkcjonalności łańcucha.</div>
-            </div>
-            
-            <div class="card mb-3">
-                <div class="card-header">Trigger</div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label">Typ triggera</label>
-                        <div class="form-check">
-                            <input class="form-check-input trigger-type" type="radio" name="trigger_type" id="triggerWebhook" value="webhook"
-                                   {% if chain.get('webhook') %}checked{% endif %} required>
-                            <label class="form-check-label" for="triggerWebhook">Webhook</label>
+    
+    <form id="chainForm" method="POST" action="{{ action_url }}">
+        <div class="row">
+            <div class="col-lg-6">
+                <!-- Podstawowe informacje o łańcuchu -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Informacje podstawowe</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="chainId" class="form-label">Identyfikator łańcucha</label>
+                            <input type="text" class="form-control" id="chainId" name="chain_id" 
+                                   value="{{ chain.id|default('') }}" {% if chain.id %}readonly{% endif %} required>
+                            <div class="form-text">Unikalny identyfikator łańcucha, używany w API.</div>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input trigger-type" type="radio" name="trigger_type" id="triggerMqtt" value="mqtt"
-                                   {% if chain.get('mqtt') %}checked{% endif %}>
-                            <label class="form-check-label" for="triggerMqtt">MQTT</label>
+                        <div class="mb-3">
+                            <label for="chainDescription" class="form-label">Opis</label>
+                            <textarea class="form-control" id="chainDescription" name="description" rows="2">{{ chain.description|default('') }}</textarea>
+                            <div class="form-text">Krótki opis celu i funkcji łańcucha.</div>
                         </div>
                     </div>
-                    
-                    <!-- Konfiguracja Webhook -->
-                    <div id="webhookConfig" class="trigger-config {% if not chain.get('webhook') %}d-none{% endif %}">
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <!-- Konfiguracja triggera -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Trigger</h5>
+                    </div>
+                    <div class="card-body">
                         <div class="mb-3">
-                            <label for="webhookEndpoint" class="form-label">Endpoint</label>
-                            <div class="input-group">
-                                <span class="input-group-text">/hook/</span>
-                                <input type="text" class="form-control" id="webhookEndpoint" name="webhook_endpoint" 
-                                      value="{{ chain.get('webhook', {}).get('endpoint', '') }}">
+                            <label class="form-label">Typ triggera</label>
+                            <div class="form-check">
+                                <input class="form-check-input trigger-type" type="radio" name="trigger_type" id="triggerWebhook" 
+                                       value="webhook" {% if chain.get('webhook') %}checked{% endif %} required>
+                                <label class="form-check-label" for="triggerWebhook">
+                                    Webhook
+                                </label>
                             </div>
-                            <div class="form-text">Endpoint do wywołania webhooks (np. "process_data").</div>
+                            <div class="form-check">
+                                <input class="form-check-input trigger-type" type="radio" name="trigger_type" id="triggerMqtt" 
+                                       value="mqtt" {% if chain.get('mqtt') %}checked{% endif %}>
+                                <label class="form-check-label" for="triggerMqtt">
+                                    MQTT
+                                </label>
+                            </div>
                         </div>
                         
-                        <div class="mb-3">
-                            <label for="webhookMethods" class="form-label">Metody HTTP</label>
-                            <select class="form-select" id="webhookMethods" name="webhook_methods" multiple>
-                                <option value="GET" {% if chain.get('webhook') and 'GET' in chain.get('webhook', {}).get('methods', []) %}selected{% endif %}>GET</option>
-                                <option value="POST" {% if not chain.get('webhook') or 'POST' in chain.get('webhook', {}).get('methods', []) %}selected{% endif %}>POST</option>
-                                <option value="PUT" {% if chain.get('webhook') and 'PUT' in chain.get('webhook', {}).get('methods', []) %}selected{% endif %}>PUT</option>
-                                <option value="DELETE" {% if chain.get('webhook') and 'DELETE' in chain.get('webhook', {}).get('methods', []) %}selected{% endif %}>DELETE</option>
-                            </select>
-                            <div class="form-text">Dozwolone metody HTTP dla tego endpointu.</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Konfiguracja MQTT -->
-                    <div id="mqttConfig" class="trigger-config {% if not chain.get('mqtt') %}d-none{% endif %}">
-                        <div class="mb-3">
-                            <label for="mqttTopic" class="form-label">Temat MQTT</label>
-                            <input type="text" class="form-control" id="mqttTopic" name="mqtt_topic" 
-                                   value="{{ chain.get('mqtt', {}).get('topic', '') }}">
-                            <div class="form-text">Temat MQTT do nasłuchiwania (np. "device/+/data").</div>
+                        <!-- Konfiguracja Webhook -->
+                        <div id="webhookConfig" class="trigger-config {% if not chain.get('webhook') %}d-none{% endif %}">
+                            <div class="mb-3">
+                                <label for="webhookEndpoint" class="form-label">Endpoint</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">/hook/</span>
+                                    <input type="text" class="form-control" id="webhookEndpoint" name="webhook_endpoint" 
+                                           value="{{ chain.get('webhook', {}).get('endpoint', '') }}">
+                                </div>
+                                <div class="form-text">Ścieżka URL dla endpointu webhook.</div>
+                            </div>
                         </div>
                         
-                        <div class="mb-3">
-                            <label for="mqttQos" class="form-label">Poziom QoS</label>
-                            <select class="form-select" id="mqttQos" name="mqtt_qos">
-                                <option value="0" {% if chain.get('mqtt') and chain.get('mqtt', {}).get('qos') == 0 %}selected{% endif %}>0 - Najwyżej raz (At most once)</option>
-                                <option value="1" {% if not chain.get('mqtt') or chain.get('mqtt', {}).get('qos') == 1 %}selected{% endif %}>1 - Przynajmniej raz (At least once)</option>
-                                <option value="2" {% if chain.get('mqtt') and chain.get('mqtt', {}).get('qos') == 2 %}selected{% endif %}>2 - Dokładnie raz (Exactly once)</option>
-                            </select>
-                            <div class="form-text">Jakość usługi dla subskrypcji MQTT.</div>
+                        <!-- Konfiguracja MQTT -->
+                        <div id="mqttConfig" class="trigger-config {% if not chain.get('mqtt') %}d-none{% endif %}">
+                            <div class="mb-3">
+                                <label for="mqttTopic" class="form-label">Temat</label>
+                                <input type="text" class="form-control" id="mqttTopic" name="mqtt_topic" 
+                                       value="{{ chain.get('mqtt', {}).get('topic', '') }}">
+                                <div class="form-text">Temat MQTT, na który nasłuchuje łańcuch.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mqttQos" class="form-label">QoS</label>
+                                <select class="form-select" id="mqttQos" name="mqtt_qos">
+                                    <option value="0" {% if chain.get('mqtt') and chain.get('mqtt', {}).get('qos') == 0 %}selected{% endif %}>0 - At most once</option>
+                                    <option value="1" {% if not chain.get('mqtt') or chain.get('mqtt', {}).get('qos') == 1 %}selected{% endif %}>1 - At least once</option>
+                                    <option value="2" {% if chain.get('mqtt') and chain.get('mqtt', {}).get('qos') == 2 %}selected{% endif %}>2 - Exactly once</option>
+                                </select>
+                                <div class="form-text">Poziom jakości usługi dla subskrypcji MQTT.</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Sekcja kroków łańcucha -->
-            <div class="card mb-3">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Kroki łańcucha</span>
-                    <button type="button" class="btn btn-sm btn-success" id="addStepButton">
-                        <i class="bi bi-plus-lg"></i> Dodaj krok
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div id="stepsContainer">
+        </div>
+        
+        <!-- Kroki łańcucha jako zakładki wertykalne -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Kroki</h5>
+            </div>
+            <div class="card-body p-0">
+                <div id="stepsContainer" class="steps-container">
+                    <!-- Zakładki dla kroków (pionowe) -->
+                    <ul class="nav steps-tabs" id="stepsTab" role="tablist">
                         {% if chain.steps %}
                             {% for step in chain.steps %}
-                            <div class="step-item card mb-3">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <span>Krok #<span class="step-number">{{ loop.index }}</span></span>
-                                    <button type="button" class="btn btn-sm btn-danger delete-step">Usuń</button>
-                                </div>
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <label class="form-label">Nazwa kroku</label>
-                                        <input type="text" class="form-control step-name" name="steps[{{ loop.index0 }}][name]" 
-                                               value="{{ step.name }}" required>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link {% if loop.first %}active{% endif %}" 
+                                        id="step-tab-{{ loop.index0 }}" 
+                                        data-bs-toggle="tab" 
+                                        data-bs-target="#step-content-{{ loop.index0 }}" 
+                                        type="button" 
+                                        role="tab" 
+                                        aria-controls="step-content-{{ loop.index0 }}" 
+                                        aria-selected="{% if loop.first %}true{% else %}false{% endif %}">
+                                    Krok {{ loop.index }}
+                                </button>
+                            </li>
+                            {% endfor %}
+                        {% endif %}
+                        <!-- Zakładka dodawania nowego kroku -->
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link add-step-tab" id="add-step-tab" type="button">
+                                +
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <!-- Zawartość zakładek -->
+                    <div class="tab-content step-content" id="stepsTabContent">
+                        {% if chain.steps %}
+                            {% for step in chain.steps %}
+                            <div class="step-tab-content {% if loop.first %}active{% endif %}" 
+                                 id="step-content-{{ loop.index0 }}" 
+                                 role="tabpanel" 
+                                 aria-labelledby="step-tab-{{ loop.index0 }}">
+                                
+                                <div class="step-item">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h4>Krok {{ loop.index }}</h4>
+                                        <button type="button" class="btn btn-danger delete-step-btn" data-step-index="{{ loop.index0 }}">
+                                            <i class="bi bi-trash"></i> Usuń krok
+                                        </button>
                                     </div>
+                                    
                                     <div class="mb-3">
-                                        <label class="form-label">Typ kroku</label>
-                                        <select class="form-select step-type" name="steps[{{ loop.index0 }}][type]" required>
-                                            <option value="">Wybierz typ...</option>
-                                            <option value="processor" {% if step.type == 'processor' %}selected{% endif %}>Processor</option>
-                                            <option value="transformer" {% if step.type == 'transformer' %}selected{% endif %}>Transformer</option>
-                                            <option value="validator" {% if step.type == 'validator' %}selected{% endif %}>Validator</option>
-                                            <option value="filter" {% if step.type == 'filter' %}selected{% endif %}>Filter</option>
-                                            <option value="plugin" {% if step.type == 'plugin' %}selected{% endif %}>Plugin</option>
+                                        <label class="form-label">Plugin</label>
+                                        <select class="form-select plugin-select" name="steps[{{ loop.index0 }}][plugin]" required>
+                                            <option value="">Wybierz plugin...</option>
+                                            {% for plugin_id, plugin in plugins.items() %}
+                                                <option value="{{ plugin_id }}" 
+                                                        data-description="{{ plugin.description|default('') }}"
+                                                        data-type="{{ plugin.type|default('local') }}"
+                                                        {% if step.plugin == plugin_id %}selected{% endif %}>
+                                                    {{ plugin.name|default(plugin_id) }} ({{ plugin.type|default('local') }})
+                                                </option>
+                                            {% endfor %}
+                                            <option value="remote:" 
+                                                    data-description="Zdalny plugin niestandardowy. Wprowadź pełną nazwę poniżej."
+                                                    {% if step.plugin and ':' in step.plugin and not step.plugin in plugins %}selected{% endif %}>
+                                                Inny zdalny plugin
+                                            </option>
                                         </select>
                                     </div>
+                                    
+                                    <!-- Pole dla zdalnych pluginów -->
+                                    <div class="mb-3 remote-plugin-field {% if not step.plugin or not step.plugin.startswith('remote:') %}d-none{% endif %}">
+                                        <label class="form-label">Nazwa zdalnego pluginu</label>
+                                        <input type="text" class="form-control remote-plugin-name" 
+                                               value="{{ step.plugin if step.plugin and step.plugin.startswith('remote:') else '' }}"
+                                               placeholder="remote:device:plugin">
+                                        <div class="form-text">Format: remote:device:plugin</div>
+                                    </div>
+                                    
+                                    <!-- Opis pluginu -->
+                                    <div class="mb-3 plugin-description-container">
+                                        {% if step.plugin %}
+                                            {% set plugin_data = plugins.get(step.plugin, {'description': 'Brak opisu'}) %}
+                                            <div class="alert alert-info plugin-description">
+                                                {{ plugin_data.description }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
                                     <div class="mb-3">
-                                        <label class="form-label">Konfiguracja (JSON)</label>
+                                        <label class="form-label">Parametry pluginu (JSON)</label>
                                         <div class="json-editor" data-index="{{ loop.index0 }}"></div>
-                                        <input type="hidden" class="step-config-input" name="steps[{{ loop.index0 }}][config]" 
-                                               value="{{ step.config|tojson }}">
+                                        <input type="hidden" class="step-params-input" name="steps[{{ loop.index0 }}][params]" 
+                                               value="{{ step.params|tojson if step.params else '{}' }}">
+                                        <div class="form-text plugin-params-help">
+                                            {% if step.plugin and plugins.get(step.plugin) and plugins.get(step.plugin).get('params_description') %}
+                                                {{ plugins.get(step.plugin).params_description|safe }}
+                                            {% else %}
+                                                Parametry konfiguracyjne dla pluginu.
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             {% endfor %}
                         {% else %}
-                        <div class="alert alert-info">
-                            Brak zdefiniowanych kroków. Kliknij "Dodaj krok", aby rozpocząć budowanie łańcucha.
-                        </div>
+                            <div class="alert alert-info m-3">
+                                Brak zdefiniowanych kroków. Kliknij "Dodaj krok", aby dodać pierwszy krok.
+                            </div>
                         {% endif %}
                     </div>
                 </div>
             </div>
-            
-            <div class="mb-3">
-                <label for="rawJson" class="form-label">Surowy JSON</label>
-                <div id="jsonEditor" style="height: 200px;"></div>
-                <input type="hidden" id="rawJsonInput" name="raw_json">
-                <div class="form-text">Możesz edytować łańcuch bezpośrednio w formacie JSON.</div>
+        </div>
+        
+        <!-- Podgląd JSON -->
+        <div class="card mb-4 json-preview-card">
+            <div class="card-header">
+                <h5 class="mb-0">Podgląd JSON</h5>
             </div>
-            
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Zapisz łańcuch</button>
-                <a href="/chains" class="btn btn-secondary">Anuluj</a>
-                <button type="button" class="btn btn-outline-secondary ms-auto" id="updateFromJson">Aktualizuj z JSON</button>
-                <button type="button" class="btn btn-outline-secondary" id="updateJsonFromForm">Aktualizuj JSON z formularza</button>
+            <div class="card-body">
+                <div id="jsonEditor" style="height: 400px;"></div>
+                <div class="mt-3">
+                    <button type="button" id="updateJsonFromForm" class="btn btn-sm btn-primary">Aktualizuj z formularza</button>
+                    <button type="button" id="updateFromJson" class="btn btn-sm btn-secondary">Aktualizuj formularz</button>
+                </div>
             </div>
-        </form>
-    </div>
+        </div>
+        
+        <!-- Przyciski formularza -->
+        <div class="mb-4">
+            <button type="submit" class="btn btn-primary">Zapisz łańcuch</button>
+            <a href="/chains" class="btn btn-secondary">Anuluj</a>
+        </div>
+        
+        <!-- Ukryte pole z surowym JSON -->
+        <input type="hidden" id="rawJsonInput" name="raw_json" value="">
+    </form>
 </div>
 {% endblock %}
 
 {% block scripts %}
-<!-- JSON Editor -->
-<script src="https://cdn.jsdelivr.net/npm/jsoneditor@9.9.2/dist/jsoneditor.min.js"></script>](https://cdn.jsdelivr.net/npm/jsoneditor@9.9.2/dist/jsoneditor.min.js"></script>)
-<!-- Własny skrypt do obsługi formularza -->
-<script src="/static/js/form_chains.js"></script>
+    <!-- JSON Editor -->
+    <script src="https://cdn.jsdelivr.net/npm/jsoneditor@9.9.2/dist/jsoneditor.min.js"></script>
+    <script src="/static/js/form_chains_tabs.js"></script>
 
-<!-- Przygotowanie danych dla JavaScript -->
-{% if chain %}
-<script id="initialDataScript" type="application/json">
-{{ chain|tojson|safe }}
-</script>
-{% endif %}
+    <!-- Przygotowanie danych dla JavaScript -->
+    {% if chain %}
+    <script id="initialDataScript" type="application/json">
+    {{ chain|tojson|safe }}
+    </script>
+    {% endif %}
 
-<script>
-    // Pobieranie danych z elementu script lub ustawienie pustego obiektu
-    var initialDataElement = document.getElementById('initialDataScript');
-    var initialData = initialDataElement ? JSON.parse(initialDataElement.textContent) : {};
-    
-    // Inicjalizacja edytora JSON
-    var container = document.getElementById('jsonEditor');
-    var options = {
-        mode: 'code',
-        onChangeText: function(jsonString) {
-            document.getElementById('rawJsonInput').value = jsonString;
-        }
-    };
-    var editor = new JSONEditor(container, options);
-    
-    editor.set(initialData);
-    document.getElementById('rawJsonInput').value = JSON.stringify(initialData);
-    
-    // Obsługa przełączania typu triggera
-    document.querySelectorAll('.trigger-type').forEach(function(radio) {
-        radio.addEventListener('change', function() {
-            document.querySelectorAll('.trigger-config').forEach(function(config) {
-                config.classList.add('d-none');
+    <script>
+        // Inicjalizacja głównego edytora JSON
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('jsonEditor');
+            window.editor = new JSONEditor(container, {
+                mode: 'tree',
+                modes: ['tree', 'code', 'form', 'text', 'view'],
+                onChangeText: function(jsonString) {
+                    document.getElementById('rawJsonInput').value = jsonString;
+                }
             });
             
-            if (this.value === 'webhook') {
-                document.getElementById('webhookConfig').classList.remove('d-none');
-            } else if (this.value === 'mqtt') {
-                document.getElementById('mqttConfig').classList.remove('d-none');
+            // Inicjalizacja z danymi z formularza
+            const updateJsonButton = document.getElementById('updateJsonFromForm');
+            if (updateJsonButton) {
+                updateJsonButton.click();
             }
         });
-    });
-    
-    // Inicjalizacja edytorów JSON dla kroków
-    document.querySelectorAll('.json-editor').forEach(function(container) {
-        var index = container.dataset.index;
-        var configInput = container.closest('.step-item').querySelector('.step-config-input');
-        
-        var stepEditor = new JSONEditor(container, {
-            mode: 'tree',
-            onChangeText: function(jsonString) {
-                configInput.value = jsonString;
-            }
-        });
-        
-        try {
-            var configValue = JSON.parse(configInput.value || '{}');
-            stepEditor.set(configValue);
-        } catch (e) {
-            stepEditor.set({});
-        }
-    });
-    
-    // Aktualizacja JSON z formularza
-    document.getElementById('updateJsonFromForm').addEventListener('click', function() {
-        // Ta funkcja została zaimplementowana w form_chains.js
-        updateJsonFromForm(editor);
-    });
-    
-    // Aktualizacja formularza z JSON
-    document.getElementById('updateFromJson').addEventListener('click', function() {
-        // Ta funkcja została zaimplementowana w form_chains.js
-        updateFormFromJson(editor);
-    });
-</script>
+    </script>
 {% endblock %}

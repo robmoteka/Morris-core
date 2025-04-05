@@ -1,5 +1,21 @@
 # Change Log
 
+## [0.0.3] - 2025-04-05
+
+### Added
+
+- Wertykalne zakładki dla kroków w edytorze łańcuchów
+- Lepsze wsparcie dla zdalnych pluginów niestandardowych
+- Domyślne opcje pluginów przy tworzeniu nowego łańcucha
+
+### Fixed
+
+- Naprawiono problem z pustą listą pluginów przy tworzeniu nowego kroku
+- Poprawiono obsługę zdarzeń w zakładkach Bootstrap
+- Naprawiono błędy parsowania JSON w parametrach pluginów
+- Ulepszono obsługę pól formularza dla zdalnych pluginów
+- Poprawiono wyświetlanie opisu pluginu po wyborze z listy
+
 ## [0.0.2] - 2025-04-05
 
 ### Fixed

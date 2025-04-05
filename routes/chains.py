@@ -14,7 +14,7 @@ from werkzeug.exceptions import NotFound, BadRequest
 chains_bp = Blueprint('chains', __name__)
 
 # Ścieżka do pliku z konfiguracją łańcuchów
-CHAINS_FILE = "data/chains.json"
+CHAINS_FILE = "chains/chains.json"
 
 @chains_bp.route('/chains')
 def list_chains():
@@ -25,7 +25,14 @@ def list_chains():
 @chains_bp.route('/chains/new', methods=['GET'])
 def new_chain():
     """Wyświetla formularz do tworzenia nowego łańcucha."""
-    return render_template('chains/edit.html', chain={}, action_title="Nowy", action_url="/chains/save")
+    # Pobierz informacje o dostępnych pluginach
+    plugin_manager = current_app.config.get('plugin_manager')
+    plugins = {}
+    
+    if plugin_manager:
+        plugins = plugin_manager.get_plugins()
+        
+    return render_template('chains/edit.html', chain={}, plugins=plugins, action_title="Nowy", action_url="/chains/save")
 
 @chains_bp.route('/chains/edit/<chain_id>', methods=['GET'])
 def edit_chain(chain_id):
@@ -40,11 +47,45 @@ def edit_chain(chain_id):
         flash('Łańcuch o podanym identyfikatorze nie istnieje', 'danger')
         return redirect(url_for('chains.list_chains'))
     
-    # Dodaj ID do obiektu łańcucha dla wygody formularza
+    # Pobierz łańcuch
     chain = chains[chain_id]
-    chain['id'] = chain_id
     
-    return render_template('chains/edit.html', chain=chain, action_title="Edytuj", 
+    # Dodaj ID do obiektu łańcucha dla wygody formularza
+    chain_data = {
+        'id': chain_id,
+        'description': chain.get('description', ''),
+        'steps': []
+    }
+    
+    # Przetwarzanie triggera
+    trigger = chain.get('trigger', '')
+    if trigger.startswith('webhook:'):
+        chain_data['webhook'] = {
+            'endpoint': trigger.split(':', 1)[1],
+            'methods': ['POST']  # Domyślnie POST
+        }
+    elif trigger.startswith('mqtt:'):
+        chain_data['mqtt'] = {
+            'topic': trigger.split(':', 1)[1],
+            'qos': 1  # Domyślnie QoS 1
+        }
+    
+    # Przetwarzanie kroków
+    for step in chain.get('steps', []):
+        step_data = {
+            'plugin': step.get('plugin', ''),
+            'params': step.get('params', {})
+        }
+        chain_data['steps'].append(step_data)
+    
+    # Pobierz informacje o dostępnych pluginach
+    plugin_manager = current_app.config.get('plugin_manager')
+    plugins = {}
+    
+    if plugin_manager:
+        plugins = plugin_manager.get_plugins()
+    
+    return render_template('chains/edit.html', chain=chain_data, plugins=plugins, action_title="Edytuj", 
                           action_url=f"/chains/update/{chain_id}")
 
 @chains_bp.route('/chains/save', methods=['POST'])
@@ -281,51 +322,60 @@ def build_chain_from_form(form_data):
         form_data (ImmutableMultiDict): Dane z formularza
         
     Returns:
-        dict: Obiekt łańcucha
+        dict: Obiekt łańcucha w formacie zgodnym z plikiem chains.json
     """
     # Podstawowe dane łańcucha
     chainData = {
         'id': form_data.get('chain_id'),
-        'description': form_data.get('description', '')
+        'description': form_data.get('description', ''),
+        'steps': []
     }
     
     # Trigger
     triggerType = form_data.get('trigger_type')
     if triggerType == 'webhook':
-        chainData['webhook'] = {
-            'endpoint': form_data.get('webhook_endpoint', ''),
-            'methods': request.form.getlist('webhook_methods')
-        }
+        endpoint = form_data.get('webhook_endpoint', '')
+        chainData['trigger'] = f'webhook:{endpoint}'
     elif triggerType == 'mqtt':
-        chainData['mqtt'] = {
-            'topic': form_data.get('mqtt_topic', ''),
-            'qos': int(form_data.get('mqtt_qos', 1))
-        }
+        topic = form_data.get('mqtt_topic', '')
+        chainData['trigger'] = f'mqtt:{topic}'
     
     # Kroki
-    chainData['steps'] = []
-    
     # Przetwarzanie kroków z formularza
     step_indices = set()
     for key in form_data:
-        if key.startswith('steps[') and key.endswith('][name]'):
-            # Wyciągnij indeks z nazwy pola, np. 'steps[0][name]' -> '0'
+        if key.startswith('steps[') and key.endswith('][plugin]'):
+            # Wyciągnij indeks z nazwy pola, np. 'steps[0][plugin]' -> '0'
             index = key[key.find('[')+1:key.find(']')]
             step_indices.add(index)
     
     # Budowanie kroków w odpowiedniej kolejności
     for index in sorted(step_indices, key=int):
+        # Pobierz nazwę pluginu
+        plugin_name = form_data.get(f'steps[{index}][plugin]', '')
+        
+        # Sprawdź, czy to jest zdalny plugin niestandardowy
+        if plugin_name == 'remote:':
+            # Pobierz pełną nazwę zdalnego pluginu z dodatkowego pola
+            remote_plugin_name = form_data.get(f'remote_plugin_name_{index}', '')
+            if remote_plugin_name:
+                plugin_name = remote_plugin_name
+        
+        # Parametry pluginu w formacie JSON
+        params_json = form_data.get(f'steps[{index}][params]', '{}')
+        try:
+            params = json.loads(params_json)
+        except json.JSONDecodeError:
+            params = {}
+        
+        # Tworzenie kroku w formacie zgodnym z chains.json
         step = {
-            'name': form_data.get(f'steps[{index}][name]', ''),
-            'type': form_data.get(f'steps[{index}][type]', '')
+            'plugin': plugin_name
         }
         
-        # Konfiguracja kroku w formacie JSON
-        config_json = form_data.get(f'steps[{index}][config]', '{}')
-        try:
-            step['config'] = json.loads(config_json)
-        except json.JSONDecodeError:
-            step['config'] = {}
+        # Dodaj parametry, jeśli istnieją i nie są pustym obiektem
+        if params and params != {}:
+            step['params'] = params
         
         chainData['steps'].append(step)
     

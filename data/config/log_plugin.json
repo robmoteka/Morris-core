@@ -1,0 +1,27 @@
+{
+  "name": "LogPlugin",
+  "description": "Konfiguracja wtyczki LogPlugin",
+  "version": "1.0.0",
+  "config": {
+    "log_level": "INFO",
+    "log_format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "log_details": {
+      "include_timestamp": true,
+      "include_source": true,
+      "include_data_size": true,
+      "include_data_type": true
+    },
+    "output_options": {
+      "console": true,
+      "file": false,
+      "file_path": "logs/log_plugin.log",
+      "max_file_size_mb": 10,
+      "backup_count": 5
+    },
+    "filtering": {
+      "exclude_fields": [],
+      "include_only": [],
+      "max_log_length": 1000
+    }
+  }
+}

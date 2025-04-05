@@ -50,6 +50,8 @@
                     <td>
                         {% if plugin.status == 'online' %}
                         <span class="badge bg-success">Online</span>
+                        {% elif plugin.status == 'active' %}
+                        <span class="badge bg-success">Aktywna</span>
                         {% else %}
                         <span class="badge bg-danger">Offline</span>
                         {% endif %}

@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Dodaj nową wtyczkę - Morris{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Strona główna</a></li>
+<li class="breadcrumb-item"><a href="{{ url_for('plugins.list_plugins') }}">Wtyczki</a></li>
+<li class="breadcrumb-item active">Nowa wtyczka</li>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h2>Dodaj nową wtyczkę</h2>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Formularz dodawania wtyczki</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('plugins.register_plugin') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nazwa wtyczki</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                            <div class="form-text">Unikalna nazwa wtyczki w systemie</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="type" class="form-label">Typ wtyczki</label>
+                            <select class="form-select" id="type" name="type" required>
+                                <option value="" selected disabled>Wybierz typ wtyczki</option>
+                                <option value="local">Lokalna</option>
+                                <option value="mqtt">MQTT</option>
+                                <option value="rest">REST</option>
+                            </select>
+                            <div class="form-text">
+                                Lokalna - wtyczka działająca w ramach systemu Morris<br>
+                                MQTT - wtyczka komunikująca się przez MQTT<br>
+                                REST - wtyczka komunikująca się przez REST API
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Opis wtyczki</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                            <div class="form-text">Krótki opis funkcjonalności wtyczki</div>
+                        </div>
+                        
+                        <div class="mb-3" id="statusField">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="online" selected>Online</option>
+                                <option value="offline">Offline</option>
+                            </select>
+                            <div class="form-text">Status początkowy wtyczki (tylko dla wtyczek zdalnych)</div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('plugins.list_plugins') }}" class="btn btn-secondary">Anuluj</a>
+                            <button type="submit" class="btn btn-primary">Dodaj wtyczkę</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Informacje</h5>
+                </div>
+                <div class="card-body">
+                    <p>Wtyczki w systemie Morris mogą być:</p>
+                    <ul>
+                        <li><strong>Lokalne</strong> - działające w ramach systemu Morris, zawsze aktywne</li>
+                        <li><strong>MQTT</strong> - komunikujące się przez MQTT, monitorowane pod kątem dostępności</li>
+                        <li><strong>REST</strong> - komunikujące się przez REST API, monitorowane pod kątem dostępności</li>
+                    </ul>
+                    <p>Wtyczki lokalne mają zawsze status <strong>Aktywna</strong> i nie są monitorowane pod kątem dostępności online/offline.</p>
+                    <p>Wtyczki zdalne (MQTT, REST) mają status <strong>Online</strong> lub <strong>Offline</strong> w zależności od ich dostępności.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Skrypt do ukrywania/pokazywania pola status w zależności od wybranego typu wtyczki
+document.addEventListener('DOMContentLoaded', function() {
+    const typeSelect = document.getElementById('type');
+    const statusField = document.getElementById('statusField');
+    
+    function updateStatusVisibility() {
+        if (typeSelect.value === 'local') {
+            statusField.style.display = 'none';
+        } else {
+            statusField.style.display = 'block';
+        }
+    }
+    
+    typeSelect.addEventListener('change', updateStatusVisibility);
+    
+    // Inicjalne sprawdzenie
+    updateStatusVisibility();
+});
+</script>
+{% endblock %}
