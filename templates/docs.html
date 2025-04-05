@@ -68,7 +68,7 @@
                 </ul>
                 
                 <h4 class="mt-4">Przykładowa definicja łańcucha w formacie JSON</h4>
-                <pre><code>{
+                <pre><code>{% raw %}{
   "id": "simple_data_processor",
   "description": "Prosty łańcuch do przetwarzania danych JSON",
   "webhook": {
@@ -99,7 +99,7 @@
       }
     }
   ]
-}</code></pre>
+}{% endraw %}</code></pre>
             </div>
         </div>
         
@@ -153,27 +153,27 @@
                             <tr>
                                 <td><strong>processor</strong></td>
                                 <td>Przetwarza dane wejściowe i generuje dane wyjściowe</td>
-                                <td><pre><code>{"method": "transform"}</code></pre></td>
+                                <td><pre><code>{% raw %}{"method": "transform"}{% endraw %}</code></pre></td>
                             </tr>
                             <tr>
                                 <td><strong>transformer</strong></td>
                                 <td>Transformuje dane według zdefiniowanego schematu</td>
-                                <td><pre><code>{"mapping": {"output": "$.input"}}</code></pre></td>
+                                <td><pre><code>{% raw %}{"mapping": {"output": "$.input"}}{% endraw %}</code></pre></td>
                             </tr>
                             <tr>
                                 <td><strong>validator</strong></td>
                                 <td>Sprawdza, czy dane spełniają określone kryteria</td>
-                                <td><pre><code>{"schema": {"type": "object"}}</code></pre></td>
+                                <td><pre><code>{% raw %}{"schema": {"type": "object"}}{% endraw %}</code></pre></td>
                             </tr>
                             <tr>
                                 <td><strong>filter</strong></td>
                                 <td>Filtruje dane według określonych warunków</td>
-                                <td><pre><code>{"condition": "$.value > 10"}</code></pre></td>
+                                <td><pre><code>{% raw %}{"condition": "$.value > 10"}{% endraw %}</code></pre></td>
                             </tr>
                             <tr>
                                 <td><strong>plugin</strong></td>
                                 <td>Używa zarejestrowanej wtyczki do przetwarzania</td>
-                                <td><pre><code>{"plugin": "image_processor"}</code></pre></td>
+                                <td><pre><code>{% raw %}{"plugin": "image_processor"}{% endraw %}</code></pre></td>
                             </tr>
                         </tbody>
                     </table>
@@ -227,12 +227,12 @@
                 </ul>
                 
                 <h4 class="mt-4">Przykład konfiguracji</h4>
-                <pre><code>{
+                <pre><code>{% raw %}{
   "mqtt": {
     "topic": "sensors/temperature",
     "qos": 1
   }
-}</code></pre>
+}{% endraw %}</code></pre>
             </div>
         </div>
         
@@ -327,7 +327,7 @@
                 <h2 id="examples" class="card-title">Przykłady użycia</h2>
                 <hr class="my-3">
                 <h4 class="mt-4">Przykład 1: Przetwarzanie danych z czujnika temperatury</h4>
-                <pre><code>{
+                <pre><code>{% raw %}{
   "id": "temperature_processor",
   "description": "Przetwarza dane z czujnika temperatury i wysyła alarmy",
   "mqtt": {
@@ -369,10 +369,10 @@
       }
     }
   ]
-}</code></pre>
+}{% endraw %}</code></pre>
                 
                 <h4 class="mt-4">Przykład 2: Przetwarzanie żądań webhooków</h4>
-                <pre><code>{
+                <pre><code>{% raw %}{
   "id": "user_data_processor",
   "description": "Przetwarza dane użytkownika z formularza kontaktowego",
   "webhook": {
@@ -422,7 +422,7 @@
       }
     }
   ]
-}</code></pre>
+}{% endraw %}</code></pre>
             </div>
         </div>
     </div>

@@ -10,3 +10,34 @@
 2025-04-05 14:10:48,520 - morris-manager - INFO - Zapisano PID 91245 do pliku mqtt.pid
 2025-04-05 14:10:48,520 - morris-manager - INFO - Zapisano PID procesu MQTT: 91245
 2025-04-05 14:10:48,520 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 91242)
+2025-04-05 14:29:52,784 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 14:29:52,785 - morris-manager - INFO - Aplikacja Morris nie jest uruchomiona
+2025-04-05 14:29:54,936 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 14:29:54,940 - morris-manager - INFO - Zapisano PID 92853 do pliku morris.pid
+2025-04-05 14:29:56,970 - morris-manager - INFO - Zapisano PID 92865 do pliku mqtt.pid
+2025-04-05 14:29:56,971 - morris-manager - INFO - Zapisano PID procesu MQTT: 92865
+2025-04-05 14:29:56,971 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 92853)
+2025-04-05 14:48:57,507 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 14:48:57,536 - morris-manager - INFO - Wysłano sygnał SIGTERM do procesu głównego (PID: 92853)
+2025-04-05 14:48:59,538 - morris-manager - INFO - Aplikacja Morris została zatrzymana
+2025-04-05 14:49:01,695 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 14:49:01,699 - morris-manager - INFO - Zapisano PID 93694 do pliku morris.pid
+2025-04-05 14:49:03,727 - morris-manager - INFO - Zapisano PID 93708 do pliku mqtt.pid
+2025-04-05 14:49:03,727 - morris-manager - INFO - Zapisano PID procesu MQTT: 93708
+2025-04-05 14:49:03,727 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 93694)
+2025-04-05 14:49:33,487 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 14:49:33,516 - morris-manager - INFO - Wysłano sygnał SIGTERM do procesu głównego (PID: 93694)
+2025-04-05 14:49:35,518 - morris-manager - INFO - Aplikacja Morris została zatrzymana
+2025-04-05 14:49:37,658 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 14:49:37,662 - morris-manager - INFO - Zapisano PID 93845 do pliku morris.pid
+2025-04-05 14:49:39,691 - morris-manager - INFO - Zapisano PID 93848 do pliku mqtt.pid
+2025-04-05 14:49:39,691 - morris-manager - INFO - Zapisano PID procesu MQTT: 93848
+2025-04-05 14:49:39,692 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 93845)
+2025-04-05 14:51:19,897 - morris-manager - INFO - Restartuję aplikację Morris...
+2025-04-05 14:51:19,926 - morris-manager - INFO - Wysłano sygnał SIGTERM do procesu głównego (PID: 93845)
+2025-04-05 14:51:21,929 - morris-manager - INFO - Aplikacja Morris została zatrzymana
+2025-04-05 14:51:24,068 - morris-manager - INFO - Uruchamianie aplikacji Morris...
+2025-04-05 14:51:24,072 - morris-manager - INFO - Zapisano PID 94042 do pliku morris.pid
+2025-04-05 14:51:26,101 - morris-manager - INFO - Zapisano PID 94045 do pliku mqtt.pid
+2025-04-05 14:51:26,101 - morris-manager - INFO - Zapisano PID procesu MQTT: 94045
+2025-04-05 14:51:26,101 - morris-manager - INFO - Aplikacja Morris została uruchomiona (PID: 94042)
