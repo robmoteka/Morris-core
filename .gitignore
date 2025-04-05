@@ -1,0 +1,81 @@
+# Pliki PID
+*.pid
+morris.pid
+
+# Pliki logów
+*.log
+logs/
+*.log.*
+
+# Pliki Pythona
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Środowiska wirtualne
+venv/
+env/
+ENV/
+.venv/
+.venv/*
+!.venv/bin/activate
+!.venv/bin/activate.fish
+!.venv/bin/activate.ps1
+.venv/bin/activate_this.py
+
+# Pliki i katalogi systemowe
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Pliki testowe
+coverage.xml
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+
+# Pliki zasobów
+*.pyo
+*.pyd
+*.pyc
+*.so
+*.dll
+*.exe
+*.obj
+*.o
+*.a
+*.lib
+*.so.*
+*.dylib
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Pliki zasobów statycznych
+static/uploads/
+static/tmp/
