@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.0.4] - 2025-04-06
+
+### Added
+
+- System monitorowania statusu wtyczek
+  - Nowy endpoint REST `/api/plugin-status/<plugin_id>`
+  - Obsługa aktualizacji statusu przez MQTT (topic: `status/<plugin_id>`)
+  - Możliwość wyświetlenia statusu wtyczek w UI
+  - Zapis statusów w pliku JSON
+  - Autoryzacja poprzez klucz API
+  - Walidacja statusów (online, offline, error, working)
+
 ## [0.0.3] - 2025-04-05
 
 ### Added

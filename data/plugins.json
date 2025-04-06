@@ -48,12 +48,5 @@
       "name": "LogPlugin",
       "version": "1.0.0"
     }
-  },
-  "Wazapa": {
-    "name": "Wazapa",
-    "type": "rest",
-    "description": "Wtyczka biorąca z mojego whatsap posty z hashtagiem. Następnie ma je wysłać na endpoind core ",
-    "status": "offline",
-    "last_seen": "2025-04-05T22:13:46.102715"
   }
 }

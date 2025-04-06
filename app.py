@@ -43,6 +43,9 @@ chain_engine = ChainEngine(mqtt_client=mqtt_client)
 # Inicjalizacja managera wtyczek
 plugin_manager = PluginManager(mqtt_client=mqtt_client)
 
+# Ustawienie PluginManager w MQTT Client
+mqtt_client.set_plugin_manager(plugin_manager)
+
 # Dodanie Chain Engine i Plugin Manager do kontekstu aplikacji
 app.config["chain_engine"] = chain_engine
 app.config["plugin_manager"] = plugin_manager
@@ -324,6 +327,57 @@ def run_chain_manually(chain_id):
             ),
             500,
         )
+
+
+@app.route("/api/plugin-status/<plugin_id>", methods=["POST"])
+def update_plugin_status(plugin_id):
+    """
+    Endpoint do aktualizacji statusu wtyczki.
+
+    Args:
+        plugin_id (str): Identyfikator wtyczki
+
+    Returns:
+        Response: Status operacji
+    """
+    try:
+        # Pobierz nagłówek Authorization
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            return jsonify({"error": "Brak autoryzacji"}), 401
+
+        api_key = auth_header.split(" ")[1]
+
+        # Sprawdź, czy wtyczka istnieje i czy klucz API jest poprawny
+        plugin = app.config["plugin_manager"].get_plugin(plugin_id)
+        if not plugin or plugin.get("api_key") != api_key:
+            return jsonify({"error": "Nieautoryzowany dostęp"}), 403
+
+        # Pobierz dane statusu
+        status_data = request.json
+        required_fields = ["status", "timestamp"]
+
+        if not all(field in status_data for field in required_fields):
+            return jsonify({"error": "Brak wymaganych pól"}), 400
+
+        # Walidacja statusu
+        valid_statuses = ["online", "offline", "error", "working"]
+        if status_data["status"] not in valid_statuses:
+            return jsonify({"error": "Nieprawidłowy status"}), 400
+
+        # Zaktualizuj status wtyczki
+        app.config["plugin_manager"].update_plugin_status(
+            plugin_id,
+            status=status_data["status"],
+            timestamp=status_data["timestamp"],
+            details=status_data.get("details"),
+        )
+
+        return jsonify({"status": "success"})
+
+    except Exception as e:
+        logger.error(f"Błąd podczas aktualizacji statusu wtyczki: {str(e)}")
+        return jsonify({"error": "Wewnętrzny błąd serwera"}), 500
 
 
 if __name__ == "__main__":

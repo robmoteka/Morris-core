@@ -1,14 +1,17 @@
 # Projekt Morris
 
 ## Opis
+
 Morris to modularna aplikacja zarządzająca przepływem danych z pomocą chainów i wtyczek (plugins), z rozproszoną architekturą i komunikacją przez MQTT + WebHook + REST.
 
 ## Architektura
+
 - **Backend**: Python + Flask
 - **Komunikacja**: MQTT (jako message bus), REST API, webhooki
 - **Rozproszenie**: konektory działają na VPS-ach lub w sieci lokalnej
 
 ## Struktura projektu
+
 ```
 morris/
 ├── app.py             # punkt startowy aplikacji
@@ -35,6 +38,7 @@ morris/
 ```
 
 ## Funkcjonalności
+
 - Aplikacja Flask z podstawową strukturą katalogów
 - Obsługa webhooków pod adresem `/hook/<modul>` – metoda POST
 - Przechwycenie danych JSON
@@ -42,21 +46,27 @@ morris/
 - Chain Engine do przetwarzania danych przez zdefiniowane chainy
 - System wtyczek (plugins) do rozszerzania funkcjonalności
 - REST API do zarządzania chainami
+- Monitorowanie statusu wtyczek (online/offline/error/working)
 
 ## Endpointy
+
 - `/` - strona główna z informacjami o aplikacji
 - `/hook/<modul>` - endpoint do odbierania webhooków
 - `/send-test` - endpoint do wysyłania testowej wiadomości MQTT
 - `/chains` - zarządzanie chainami (GET, POST)
 - `/chains/<chain_id>` - zarządzanie pojedynczym chainem (GET, PUT, DELETE)
 - `/run-chain/<chain_id>` - ręczne uruchomienie chaina (POST)
+- `/api/plugin-status/<plugin_id>` - aktualizacja statusu wtyczki (POST)
 
 ## Chain Engine
+
 Chain Engine to główny komponent odpowiedzialny za przetwarzanie danych przez zdefiniowane chainy. Każdy chain składa się z:
+
 - Triggera - identyfikatora, który uruchamia chain (np. `webhook:test` lub `mqtt:core/test`)
 - Kroków - sekwencji wtyczek, które przetwarzają dane
 
 Chainy są definiowane w pliku `chains/chains.json` w formacie:
+
 ```json
 {
   "chain_id": {
@@ -74,18 +84,28 @@ Chainy są definiowane w pliku `chains/chains.json` w formacie:
 ```
 
 ## Wtyczki (Plugins)
+
 Wtyczki to komponenty rozszerzające funkcjonalność aplikacji. Każda wtyczka dziedziczy po klasie `BasePlugin` i implementuje metodę `process(data, config)`, która przetwarza dane wejściowe i zwraca wynik.
 
 Dostępne wtyczki:
+
 - `LogPlugin` - loguje otrzymane dane i przekazuje je dalej bez zmian
 - `UppercasePlugin` - konwertuje wartości tekstowe w danych wejściowych na wielkie litery
 
+Statusy wtyczek:
+
+- `online` - wtyczka działa poprawnie
+- `offline` - wtyczka jest wyłączona lub niedostępna
+- `error` - wtyczka napotkała błąd
+- `working` - wtyczka jest w trakcie przetwarzania
+
 ## Logo
 
-Domyślnie, system szuka pliku logo w lokalizacji `static/images/morris_logo.png`. 
+Domyślnie, system szuka pliku logo w lokalizacji `static/images/morris_logo.png`.
 Jeśli chcesz użyć własnego logo, zastąp ten plik swoim obrazem, zachowując tę samą nazwę pliku.
 
 ## Uruchomienie
+
 ```bash
 python app.py
 ```
@@ -93,6 +113,7 @@ python app.py
 Aplikacja domyślnie działa na porcie 30331.
 
 ## Zarządzanie aplikacją
+
 Do zarządzania aplikacją Morris i jej procesem MQTT służy skrypt `morris.py`. Jest to rekomendowany sposób uruchamiania i zatrzymywania aplikacji, który zapewnia prawidłowe zarządzanie procesami głównymi i potomnymi.
 
 ```bash
@@ -120,17 +141,21 @@ python morris.py restart
 Skrypt automatycznie zarządza zarówno głównym procesem aplikacji, jak i procesem potomnym MQTT. Nie zaleca się używania innych metod do kontrolowania tych procesów (np. bezpośrednio kill, pkill, itp.), ponieważ może to prowadzić do pozostawiania "osieroconych" procesów.
 
 ## Testowanie
+
 Przykładowe żądanie do webhooka:
+
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{"message": "test", "value": 42}' http://localhost:30331/hook/test
 ```
 
 Ręczne uruchomienie chaina:
+
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{"message": "test", "value": 42}' http://localhost:30331/run-chain/test_chain
 ```
 
 ## Wymagane biblioteki
+
 - flask
 - paho-mqtt
 - threading (dla MQTT clienta jako osobnego wątku)
@@ -138,6 +163,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"message": "test", "value"
 - pytest-cov (dla raportów pokrycia kodu)
 
 ## Uruchamianie testów
+
 ```bash
 # Uruchomienie wszystkich testów
 python tests/run_tests.py
@@ -147,3 +173,4 @@ pytest
 
 # Uruchomienie testów z raportem pokrycia kodu
 pytest --cov=.
+```
