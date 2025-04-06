@@ -13,6 +13,7 @@ Ten dokument zawiera wytyczne dla modeli językowych (LLM) dotyczące tworzenia 
 7. [Integracja z Chain Engine](#integracja-z-chain-engine)
 8. [Najlepsze praktyki](#najlepsze-praktyki)
 9. [Przykłady](#przykłady)
+10. [Endpointy statusu wtyczek](#endpointy-statusu-wtyczek)
 
 ## Architektura webhooków
 
@@ -73,12 +74,12 @@ Odpowiedzi z webhooków mają standardową strukturę:
 
 ```json
 {
-    "status": "success|error",
-    "message": "Opis wyniku operacji",
-    "data": {
-        // Dane wynikowe specyficzne dla akcji
-    },
-    "timestamp": "2025-04-05T12:34:57Z"
+  "status": "success|error",
+  "message": "Opis wyniku operacji",
+  "data": {
+    // Dane wynikowe specyficzne dla akcji
+  },
+  "timestamp": "2025-04-05T12:34:57Z"
 }
 ```
 
@@ -90,35 +91,35 @@ Endpointy webhooków są definiowane w konfiguracji łańcuchów przetwarzania (
 
 ```json
 {
-    "webhook_chain": {
-        "description": "Łańcuch przetwarzania dla przykładowego webhooks",
-        "webhook": {
-            "endpoint": "przyklad",
-            "methods": ["POST"],
-            "required_params": ["action", "data"]
-        },
-        "steps": [
-            {
-                "name": "walidacja_danych",
-                "type": "validator",
-                "config": {
-                    "schema": {
-                        "action": "string",
-                        "data": "object"
-                    }
-                }
-            },
-            {
-                "name": "przetwarzanie",
-                "type": "processor",
-                "config": {
-                    "action_map": {
-                        "przyklad_akcji": "przyklad_processor"
-                    }
-                }
-            }
-        ]
-    }
+  "webhook_chain": {
+    "description": "Łańcuch przetwarzania dla przykładowego webhooks",
+    "webhook": {
+      "endpoint": "przyklad",
+      "methods": ["POST"],
+      "required_params": ["action", "data"]
+    },
+    "steps": [
+      {
+        "name": "walidacja_danych",
+        "type": "validator",
+        "config": {
+          "schema": {
+            "action": "string",
+            "data": "object"
+          }
+        }
+      },
+      {
+        "name": "przetwarzanie",
+        "type": "processor",
+        "config": {
+          "action_map": {
+            "przyklad_akcji": "przyklad_processor"
+          }
+        }
+      }
+    ]
+  }
 }
 ```
 
@@ -168,24 +169,24 @@ Zalecane jest stosowanie schematu walidacji dla danych wejściowych w każdym we
 
 ```json
 {
-    "name": "walidacja_webhooks",
-    "type": "validator",
-    "config": {
-        "schema": {
-            "action": {
-                "type": "string",
-                "required": true
-            },
-            "data": {
-                "type": "object",
-                "required": true
-            },
-            "metadata": {
-                "type": "object",
-                "required": false
-            }
-        }
+  "name": "walidacja_webhooks",
+  "type": "validator",
+  "config": {
+    "schema": {
+      "action": {
+        "type": "string",
+        "required": true
+      },
+      "data": {
+        "type": "object",
+        "required": true
+      },
+      "metadata": {
+        "type": "object",
+        "required": false
+      }
     }
+  }
 }
 ```
 
@@ -208,16 +209,17 @@ Webhooks są ściśle zintegrowane z Chain Engine systemu Morris, co pozwala na:
 6. **Limity czasowe** - Ustaw rozsądne limity czasowe dla przetwarzania żądań webhookowych
 7. **Ograniczenie częstotliwości** - Implementuj mechanizmy rate-limitingu dla publicznych endpointów
 8. **Używaj skryptu zarządzającego** - Do uruchamiania i zatrzymywania aplikacji Morris wraz z jej webhookami używaj skryptu `morris.py` (dostępnego w głównym katalogu projektu), który zapewnia prawidłowe zarządzanie procesami głównymi i potomnymi:
+
    ```bash
    # Uruchamianie
    python morris.py start
-   
+
    # Zatrzymywanie
    python morris.py stop
-   
+
    # Sprawdzanie statusu
    python morris.py status
-   
+
    # Restart
    python morris.py restart
    ```
@@ -230,54 +232,54 @@ Webhooks są ściśle zintegrowane z Chain Engine systemu Morris, co pozwala na:
 
 ```json
 {
-    "data_processing_chain": {
-        "description": "Łańcuch przetwarzania danych z zewnętrznych źródeł",
-        "webhook": {
-            "endpoint": "process_data",
-            "methods": ["POST"],
-            "required_params": ["data_type", "content"]
-        },
-        "steps": [
-            {
-                "name": "walidacja",
-                "type": "validator",
-                "config": {
-                    "schema": {
-                        "data_type": {
-                            "type": "string",
-                            "enum": ["text", "json", "csv"]
-                        },
-                        "content": {
-                            "type": "string",
-                            "minLength": 1
-                        }
-                    }
-                }
+  "data_processing_chain": {
+    "description": "Łańcuch przetwarzania danych z zewnętrznych źródeł",
+    "webhook": {
+      "endpoint": "process_data",
+      "methods": ["POST"],
+      "required_params": ["data_type", "content"]
+    },
+    "steps": [
+      {
+        "name": "walidacja",
+        "type": "validator",
+        "config": {
+          "schema": {
+            "data_type": {
+              "type": "string",
+              "enum": ["text", "json", "csv"]
             },
-            {
-                "name": "konwersja_danych",
-                "type": "data_converter",
-                "config": {
-                    "type_map": {
-                        "text": "text_processor",
-                        "json": "json_processor",
-                        "csv": "csv_processor"
-                    }
-                }
-            },
-            {
-                "name": "analiza",
-                "type": "data_analyzer",
-                "config": {
-                    "analysis_types": ["summary", "sentiment", "keywords"]
-                }
+            "content": {
+              "type": "string",
+              "minLength": 1
             }
-        ],
-        "output": {
-            "format": "json",
-            "fields": ["summary", "sentiment", "keywords"]
+          }
         }
+      },
+      {
+        "name": "konwersja_danych",
+        "type": "data_converter",
+        "config": {
+          "type_map": {
+            "text": "text_processor",
+            "json": "json_processor",
+            "csv": "csv_processor"
+          }
+        }
+      },
+      {
+        "name": "analiza",
+        "type": "data_analyzer",
+        "config": {
+          "analysis_types": ["summary", "sentiment", "keywords"]
+        }
+      }
+    ],
+    "output": {
+      "format": "json",
+      "fields": ["summary", "sentiment", "keywords"]
     }
+  }
 }
 ```
 
@@ -302,17 +304,23 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ```json
 {
-    "status": "success",
-    "message": "Dane przetworzone pomyślnie",
-    "data": {
-        "summary": "Tekst opisuje system Morris do integracji i przetwarzania danych.",
-        "sentiment": {
-            "score": 0.72,
-            "label": "positive"
-        },
-        "keywords": ["Morris", "system", "integracja", "przetwarzanie danych", "technologie"]
+  "status": "success",
+  "message": "Dane przetworzone pomyślnie",
+  "data": {
+    "summary": "Tekst opisuje system Morris do integracji i przetwarzania danych.",
+    "sentiment": {
+      "score": 0.72,
+      "label": "positive"
     },
-    "timestamp": "2025-04-05T12:00:01Z"
+    "keywords": [
+      "Morris",
+      "system",
+      "integracja",
+      "przetwarzanie danych",
+      "technologie"
+    ]
+  },
+  "timestamp": "2025-04-05T12:00:01Z"
 }
 ```
 
@@ -322,77 +330,80 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ```json
 {
-    "notification_chain": {
-        "description": "Łańcuch do obsługi powiadomień z zewnętrznych systemów",
-        "webhook": {
-            "endpoint": "notification",
-            "methods": ["POST"],
-            "required_params": ["type", "message"]
-        },
-        "steps": [
-            {
-                "name": "walidacja_powiadomienia",
-                "type": "validator",
-                "config": {
-                    "schema": {
-                        "type": {
-                            "type": "string",
-                            "enum": ["info", "warning", "alert", "critical"]
-                        },
-                        "message": {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 500
-                        },
-                        "target": {
-                            "type": "string",
-                            "required": false
-                        }
-                    }
-                }
+  "notification_chain": {
+    "description": "Łańcuch do obsługi powiadomień z zewnętrznych systemów",
+    "webhook": {
+      "endpoint": "notification",
+      "methods": ["POST"],
+      "required_params": ["type", "message"]
+    },
+    "steps": [
+      {
+        "name": "walidacja_powiadomienia",
+        "type": "validator",
+        "config": {
+          "schema": {
+            "type": {
+              "type": "string",
+              "enum": ["info", "warning", "alert", "critical"]
             },
-            {
-                "name": "klasyfikacja_powiadomienia",
-                "type": "classifier",
-                "config": {
-                    "type_map": {
-                        "info": "low_priority",
-                        "warning": "medium_priority",
-                        "alert": "high_priority",
-                        "critical": "immediate_action"
-                    }
-                }
+            "message": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
             },
-            {
-                "name": "routing_powiadomienia",
-                "type": "router",
-                "config": {
-                    "routes": {
-                        "low_priority": "log_only",
-                        "medium_priority": "notify_system",
-                        "high_priority": "notify_admin",
-                        "immediate_action": "alert_team"
-                    }
-                }
-            },
-            {
-                "name": "wysylanie_powiadomienia",
-                "type": "notifier",
-                "config": {
-                    "channels": {
-                        "log_only": {"type": "log", "level": "info"},
-                        "notify_system": {"type": "mqtt", "topic": "system/notifications"},
-                        "notify_admin": {"type": "email", "template": "admin_alert"},
-                        "alert_team": {"type": "sms", "template": "emergency_alert"}
-                    }
-                }
+            "target": {
+              "type": "string",
+              "required": false
             }
-        ],
-        "output": {
-            "format": "json",
-            "fields": ["notification_id", "status", "delivery_info"]
+          }
         }
+      },
+      {
+        "name": "klasyfikacja_powiadomienia",
+        "type": "classifier",
+        "config": {
+          "type_map": {
+            "info": "low_priority",
+            "warning": "medium_priority",
+            "alert": "high_priority",
+            "critical": "immediate_action"
+          }
+        }
+      },
+      {
+        "name": "routing_powiadomienia",
+        "type": "router",
+        "config": {
+          "routes": {
+            "low_priority": "log_only",
+            "medium_priority": "notify_system",
+            "high_priority": "notify_admin",
+            "immediate_action": "alert_team"
+          }
+        }
+      },
+      {
+        "name": "wysylanie_powiadomienia",
+        "type": "notifier",
+        "config": {
+          "channels": {
+            "log_only": { "type": "log", "level": "info" },
+            "notify_system": {
+              "type": "mqtt",
+              "topic": "system/notifications"
+            },
+            "notify_admin": { "type": "email", "template": "admin_alert" },
+            "alert_team": { "type": "sms", "template": "emergency_alert" }
+          }
+        }
+      }
+    ],
+    "output": {
+      "format": "json",
+      "fields": ["notification_id", "status", "delivery_info"]
     }
+  }
 }
 ```
 
@@ -420,18 +431,18 @@ X-Webhook-Secret: tajny_klucz_webhook
 
 ```json
 {
-    "status": "success",
-    "message": "Powiadomienie zostało przetworzone",
-    "data": {
-        "notification_id": "notif-2025040513152201",
-        "status": "sent",
-        "delivery_info": {
-            "channel": "email",
-            "recipient": "admin@przykład.pl",
-            "sent_at": "2025-04-05T13:15:23Z"
-        }
-    },
-    "timestamp": "2025-04-05T13:15:23Z"
+  "status": "success",
+  "message": "Powiadomienie zostało przetworzone",
+  "data": {
+    "notification_id": "notif-2025040513152201",
+    "status": "sent",
+    "delivery_info": {
+      "channel": "email",
+      "recipient": "admin@przykład.pl",
+      "sent_at": "2025-04-05T13:15:23Z"
+    }
+  },
+  "timestamp": "2025-04-05T13:15:23Z"
 }
 ```
 
@@ -439,7 +450,7 @@ X-Webhook-Secret: tajny_klucz_webhook
 
 Oto przykład implementacji własnego handlera do obsługi webhooków w Pythonie z użyciem Flask:
 
-```python
+````python
 from flask import Blueprint, request, jsonify, current_app
 import json
 import logging
@@ -456,10 +467,10 @@ webhook_bp = Blueprint('webhook', __name__)
 def handle_webhook(modul):
     """
     Główny endpoint do obsługi webhooków.
-    
+
     Args:
         modul (str): Identyfikator modułu/chainu do wywołania
-        
+
     Returns:
         Response: Wynik przetwarzania w formacie JSON
     """
@@ -471,13 +482,13 @@ def handle_webhook(modul):
             "message": "Oczekiwano danych w formacie JSON",
             "timestamp": datetime.now().isoformat()
         }), 400
-    
+
     # Pobranie danych z żądania
     webhook_data = request.get_json()
-    
+
     # Pobranie chain engine z kontekstu aplikacji
     chain_engine = current_app.config.get('chain_engine')
-    
+
     if not chain_engine:
         logger.error("Chain Engine nie jest dostępny w kontekście aplikacji")
         return jsonify({
@@ -485,7 +496,7 @@ def handle_webhook(modul):
             "message": "Błąd konfiguracji serwera",
             "timestamp": datetime.now().isoformat()
         }), 500
-    
+
     # Sprawdzenie czy istnieje chain dla danego modułu
     if not chain_engine.has_chain(modul):
         logger.warning(f"Nie znaleziono łańcucha dla modułu: {modul}")
@@ -494,12 +505,12 @@ def handle_webhook(modul):
             "message": f"Nie znaleziono obsługi dla modułu: {modul}",
             "timestamp": datetime.now().isoformat()
         }), 404
-    
+
     try:
         # Uruchomienie chainu z danymi z webhooks
         logger.info(f"Uruchamianie chainu dla webhooks /{modul}")
         result = chain_engine.run_chain(modul, webhook_data)
-        
+
         # Zwrócenie wyniku przetwarzania
         return jsonify({
             "status": "success",
@@ -507,7 +518,7 @@ def handle_webhook(modul):
             "data": result,
             "timestamp": datetime.now().isoformat()
         })
-        
+
     except Exception as e:
         logger.error(f"Błąd podczas przetwarzania webhooks /{modul}: {str(e)}")
         return jsonify({
@@ -515,7 +526,70 @@ def handle_webhook(modul):
             "message": f"Wystąpił błąd podczas przetwarzania: {str(e)}",
             "timestamp": datetime.now().isoformat()
         }), 500
+
+## Endpointy statusu wtyczek
+
+### Aktualizacja statusu wtyczki
+
+Endpoint: `POST /api/plugin-status/<plugin_id>`
+
+#### Opis
+Endpoint służy do aktualizacji statusu wtyczki przez wtyczki zewnętrzne. Obsługuje autoryzację przez klucz API i zapisuje status w pliku JSON.
+
+#### Parametry URL
+- `plugin_id`: Unikalny identyfikator wtyczki
+
+#### Nagłówki
+```http
+Authorization: Bearer <api_key>
+````
+
+#### Treść żądania (JSON)
+
+```json
+{
+  "status": "online|offline|error|working",
+  "timestamp": "2025-04-05T12:34:56Z",
+  "details": "Opcjonalne szczegóły statusu"
+}
 ```
+
+#### Możliwe stany statusu
+
+- `online`: Wtyczka działa poprawnie
+- `offline`: Wtyczka jest wyłączona lub niedostępna
+- `error`: Wtyczka napotkała błąd
+- `working`: Wtyczka jest w trakcie przetwarzania
+
+#### Przykład żądania
+
+```http
+POST /api/plugin-status/plugin123
+Authorization: Bearer XYZ123
+Content-Type: application/json
+
+{
+    "status": "online",
+    "timestamp": "2025-04-05T12:34:56Z",
+    "details": "Nasłuch aktywny"
+}
+```
+
+#### Przykład odpowiedzi
+
+```json
+{
+  "status": "success",
+  "message": "Status wtyczki został zaktualizowany"
+}
+```
+
+#### Błędy
+
+- `401 Unauthorized`: Brak autoryzacji
+- `403 Forbidden`: Nieautoryzowany dostęp
+- `400 Bad Request`: Brak wymaganych pól lub nieprawidłowy status
+- `500 Internal Server Error`: Wewnętrzny błąd serwera
 
 ---
 
@@ -524,6 +598,7 @@ def handle_webhook(modul):
 Webhooks w systemie Morris stanowią elastyczny mechanizm integracji z zewnętrznymi systemami, umożliwiając przetwarzanie danych przychodzących przez HTTP oraz uruchamianie zdefiniowanych łańcuchów przetwarzania. Przestrzeganie powyższych wytycznych zapewni spójność i niezawodność działania webhooków w całym systemie.
 
 Przy tworzeniu i korzystaniu z webhooków:
+
 1. Definiuj jasną strukturę danych wejściowych i wyjściowych
 2. Implementuj odpowiednie mechanizmy uwierzytelniania i walidacji
 3. Projektuj webhooks zgodnie z zasadami RESTful API
